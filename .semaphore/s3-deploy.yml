@@ -29,9 +29,9 @@ blocks:
             - npx webpack --mode=production
             - |
               if [ "$SEMAPHORE_GIT_BRANCH" = "main" ]; then
-                aws s3 sync --acl public-read dist/ s3://$PRODUCTION_S3_BUCKET_NAME/html-forms --exclude "*.html";
-                aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/html-forms/*";
+                aws s3 sync --acl public-read dist/ s3://$PRODUCTION_S3_BUCKET_NAME/os-custom-elements --exclude "*.html";
+                aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/os-custom-elements/*";
               else
-                aws s3 sync --acl public-read dist/ s3://$S3_BUCKET_NAME/html-forms --exclude "*.html";
+                aws s3 sync --acl public-read dist/ s3://$S3_BUCKET_NAME/os-custom-elements --exclude "*.html";
               fi
 
