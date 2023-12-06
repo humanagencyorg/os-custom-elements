@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script defer src="<%= os_custom_elements %>"></script>
+  </head>
+
+  <body>
+    <div>
+      <os-file-upload
+        data-os-element="upload"
+        data-os-uuid="upload_field_uuid"
+      ></os-file-upload>
+      <div
+        data-os-element="field-error"
+        data-os-for="upload_field_uuid"
+        class="os-hidden"
+      ></div>
+    </div>
+  </body>
+</html>
