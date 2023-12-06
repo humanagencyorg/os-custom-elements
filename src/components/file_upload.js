@@ -54,6 +54,7 @@ export class OSFileUpload extends HTMLElement {
         if (file.size > maxSizeInBytes) {
           const fileSizeMsg =
             "File size exceeds the limit of 25MB. Please select a smaller file.";
+          showFieldError(fileSizeMsg);
         } else {
           const uploader = new Uploader(
             file,

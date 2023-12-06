@@ -1,5 +1,5 @@
 version: v1.0
-name: OS custom components
+name: OS custom elements
 
 agent:
   machine:

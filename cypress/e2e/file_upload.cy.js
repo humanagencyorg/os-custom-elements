@@ -22,4 +22,25 @@ context("upload field", function () {
       });
     });
   });
+
+  describe("when the file size is exceeded", () => {
+    it("shows error message", function () {
+      const thirtyMb = 30 * 1024 * 1024;
+      const bigFile = Cypress.Buffer.alloc(thirtyMb);
+      bigFile.write("X", thirtyMb);
+      cy.get("[data-os-element='field-error']").should("not.be.visible");
+
+      cy.get("os-file-upload").get("input[type='file']").selectFile(
+        {
+          contents: bigFile,
+          fileName: "30mb.txt",
+          mimeType: "text/plain",
+        },
+      );
+
+      cy.get("[data-os-element='field-error']")
+        .should("be.visible")
+        .and("contain.text", "File size exceeds the limit of 25MB. Please select a smaller file.");
+    });
+  });
 });
