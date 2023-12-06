@@ -1,7 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-
+const port = 5050;
 const app = express();
 
 app.get("/", (_req, res) => {
@@ -17,7 +17,6 @@ app.get("/", (_req, res) => {
 
 app.use(express.static(path.join(__dirname, "/dist")));
 
-const PORT = 5050;
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}/`);
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}/`);
 });
