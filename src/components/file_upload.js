@@ -25,7 +25,7 @@ export class OSFileUpload extends HTMLElement {
         fieldErrorEl.innerText = text;
       } else {
         console.warn(
-          `form-error element for data-os-uuid ${uuid} was not found`,
+          `field-error element for data-os-uuid ${uuid} was not found`,
         );
       }
     };

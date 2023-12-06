@@ -35,3 +35,6 @@ blocks:
             - npm run cy:verify
             - npm run ci:start
             - npm run cy:chrome
+promotions:
+  - name: S3 deploy
+    pipeline_file: s3-deploy.yml

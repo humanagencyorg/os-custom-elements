@@ -8,21 +8,13 @@
       .os-hidden {
         display: none;
       }
+      [data-os-element="field-error"] {
+        color: maroon;
+      }
     </style>
   </head>
 
   <body>
-    <div>
-      <input
-        type="text"
-        data-os-uuid="text_field_uuid"
-      />
-      <div
-        data-os-element="field-error"
-        data-os-for="text_field_uuid"
-        class="os-hidden"
-      ></div>
-    </div>
     <h3>File upload fields</h3>
     <div>
       <os-file-upload

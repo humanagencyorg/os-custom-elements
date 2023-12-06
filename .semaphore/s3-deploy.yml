@@ -1,0 +1,37 @@
+version: v1.0
+name: S3-Deploy
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+
+blocks:
+  - name: "Deploy to S3"
+    task:
+      secrets:
+        - name: Avala Widget AWS
+      env_vars:
+        - name: PRODUCTION_S3_BUCKET_NAME
+          value: avala-html-form-script
+        - name: S3_BUCKET_NAME
+          value: avala-test-html-form-script
+        - name: CLOUDFRONT_DISTRIBUTION_ID
+          value: E269JVYZN2LS4
+      prologue:
+        commands:
+          - checkout
+          - cache restore npm-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)-$(checksum .semaphore/semaphore.yml)
+      jobs:
+        - name: "Deployment"
+          commands:
+            - sem-version node 20.9.0
+            - npm ci
+            - npx webpack --mode=production
+            - |
+              if [ "$SEMAPHORE_GIT_BRANCH" = "main" ]; then
+                aws s3 sync --acl public-read dist/ s3://$PRODUCTION_S3_BUCKET_NAME/html-forms --exclude "*.html";
+                aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/html-forms/*";
+              else
+                aws s3 sync --acl public-read dist/ s3://$S3_BUCKET_NAME/html-forms --exclude "*.html";
+              fi
+
