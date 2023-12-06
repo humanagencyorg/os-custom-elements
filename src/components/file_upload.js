@@ -8,7 +8,7 @@ export class OSFileUpload extends HTMLElement {
 
   connectedCallback() {
     const uuid = this.getAttribute(ATTRIBUTES.uuid);
-    const fieldErrorEl = this._getElement("field-error");
+    const fieldErrorEl = document.querySelector(`[${ATTRIBUTES.for}="${uuid}"]`);
 
     const fileInput = document.createElement("input");
     fileInput.type = "file";

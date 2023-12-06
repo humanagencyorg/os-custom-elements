@@ -1,4 +1,5 @@
 export const ATTRIBUTES = {
+  for: "data-os-for",
   uuid: "data-os-uuid",
   element: "data-os-element",
 };
