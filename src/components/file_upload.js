@@ -1,4 +1,4 @@
-import { ALLOWED_FILE_TYPES } from "../utils/constants";
+import { ALLOWED_FILE_TYPES, ATTRIBUTES, CLASSNAMES } from "../utils/constants";
 import { Uploader } from "../utils/uploader";
 
 export class OSFileUpload extends HTMLElement {
@@ -7,6 +7,9 @@ export class OSFileUpload extends HTMLElement {
   }
 
   connectedCallback() {
+    const uuid = this.getAttribute(ATTRIBUTES.uuid);
+    const fieldErrorEl = this._getElement("field-error");
+
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = ALLOWED_FILE_TYPES;
@@ -16,7 +19,19 @@ export class OSFileUpload extends HTMLElement {
     signedIdInput.type = "hidden";
     this.appendChild(signedIdInput);
 
+    const showFieldError = (text) => {
+      if (fieldErrorEl) {
+        this._showElement(fieldErrorEl);
+        fieldErrorEl.innerText = text;
+      } else {
+        console.warn(
+          `form-error element for data-os-uuid ${uuid} was not found`,
+        );
+      }
+    };
+
     const resetElements = () => {
+      this._resetElement(fieldErrorEl);
       signedIdInput.value = "";
     };
 
@@ -24,6 +39,7 @@ export class OSFileUpload extends HTMLElement {
       const signedId = blob?.signed_id;
 
       if (error) {
+        showFieldError(error);
       } else {
         signedIdInput.value = signedId;
       }
@@ -36,7 +52,8 @@ export class OSFileUpload extends HTMLElement {
 
       if (file) {
         if (file.size > maxSizeInBytes) {
-          const fileSizeMsg = "File size exceeds the limit of 25MB. Please select a smaller file.";
+          const fileSizeMsg =
+            "File size exceeds the limit of 25MB. Please select a smaller file.";
         } else {
           const uploader = new Uploader(
             file,
@@ -50,5 +67,22 @@ export class OSFileUpload extends HTMLElement {
         }
       }
     });
+  }
+
+  _getElement(attr) {
+    return document.querySelector(`[${ATTRIBUTES.element}="${attr}"]`);
+  }
+
+  _showElement(el) {
+    if (el) {
+      el.classList.remove(CLASSNAMES.hidden);
+    }
+  }
+
+  _resetElement(el) {
+    if (el) {
+      el.classList.add(CLASSNAMES.hidden);
+      el.innerText = "";
+    }
   }
 }
