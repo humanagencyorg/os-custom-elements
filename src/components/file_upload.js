@@ -8,7 +8,8 @@ export class OSFileUpload extends HTMLElement {
 
   connectedCallback() {
     const uuid = this.getAttribute(ATTRIBUTES.uuid);
-    const fieldErrorEl = document.querySelector(`[${ATTRIBUTES.for}="${uuid}"]`);
+    const fieldErrorEl = this._selectFieldElement("field-error", uuid);
+    const uploadSuccessEl = this._selectFieldElement("upload-success", uuid);
 
     const fileInput = document.createElement("input");
     fileInput.type = "file";
@@ -24,14 +25,21 @@ export class OSFileUpload extends HTMLElement {
         this._showElement(fieldErrorEl);
         fieldErrorEl.innerText = text;
       } else {
-        console.warn(
-          `field-error element for data-os-uuid ${uuid} was not found`,
-        );
+        this._consoleWarn("field-error", uuid);
+      }
+    };
+
+    const showUploadSuccess = () => {
+      if (uploadSuccessEl) {
+        this._showElement(uploadSuccessEl);
+      } else {
+        this._consoleWarn("upload-success", uuid);
       }
     };
 
     const resetElements = () => {
       this._resetElement(fieldErrorEl);
+      this._hideElement(uploadSuccessEl);
       signedIdInput.value = "";
     };
 
@@ -41,6 +49,7 @@ export class OSFileUpload extends HTMLElement {
       if (error) {
         showFieldError(error);
       } else {
+        showUploadSuccess();
         signedIdInput.value = signedId;
       }
     };
@@ -80,10 +89,28 @@ export class OSFileUpload extends HTMLElement {
     }
   }
 
+  _hideElement(el) {
+    if (el) {
+      el.classList.add(CLASSNAMES.hidden);
+    }
+  }
+
   _resetElement(el) {
     if (el) {
       el.classList.add(CLASSNAMES.hidden);
       el.innerText = "";
     }
+  }
+
+  _selectFieldElement(attr, uuid) {
+    return document.querySelector(
+      `[${ATTRIBUTES.element}="${attr}"][${ATTRIBUTES.for}="${uuid}"]`,
+    );
+  }
+
+  _consoleWarn(attr, uuid) {
+    console.warn(
+      `${attr} element for data-os-uuid ${uuid} was not found`,
+    );
   }
 }

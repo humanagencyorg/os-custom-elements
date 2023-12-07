@@ -1,6 +1,59 @@
 context("upload field", function () {
   beforeEach(() => {
+    cy.fixture("direct_uploads_success_response.json").as("directUploadsSuccess");
     cy.visit("/");
+  });
+
+  describe("when upload succeeded", () => {
+    it("shows success message", function () {
+      const firstFieldUuid = "upload_field_1_uuid";
+      const successMessageSelector =
+        `[data-os-element='upload-success'][data-os-for='${firstFieldUuid}']`;
+
+      cy.get(successMessageSelector).should("not.be.visible");
+      cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
+        .as("directUploadSuccess");
+      cy.intercept("**/rails/active_storage/disk/*", this.directUploadsSuccess)
+        .as("activeStorageSuccess");
+
+      cy.get(`os-file-upload[data-os-uuid='${firstFieldUuid}']`).within(
+        () => {
+          cy.get("input[type='file']")
+            .selectFile("cypress/fixtures/upload_test.txt");
+        },
+      );
+
+      cy.wait(["@directUploadSuccess", "@activeStorageSuccess"]).then(() => {
+        cy.get(successMessageSelector)
+          .should("be.visible")
+          .and("have.text", "Upload success!");
+      });
+    });
+
+    it("sets signed_id value to the hidden input", function () {
+      const firstFieldUuid = "upload_field_1_uuid";
+      const fieldSelector = `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
+
+      cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
+        .as("directUploadSuccess");
+      cy.intercept("**/rails/active_storage/disk/*", this.directUploadsSuccess)
+        .as("activeStorageSuccess");
+
+      cy.get(fieldSelector).within(
+        () => {
+          cy.get("input[type='file']")
+            .selectFile("cypress/fixtures/upload_test.txt");
+        },
+      );
+
+      cy.wait(["@directUploadSuccess", "@activeStorageSuccess"]).then(() => {
+        cy.get(fieldSelector).within(
+          () => {
+            cy.get("input[type='hidden']").should("have.value", "signed_id_value");
+          },
+        );
+      });
+    });
   });
 
   describe("when upload is failed", () => {
