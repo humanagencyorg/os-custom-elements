@@ -8,8 +8,9 @@ export class OSFileUpload extends HTMLElement {
 
   connectedCallback() {
     const uuid = this.getAttribute(ATTRIBUTES.uuid);
-    const fieldErrorEl = this._selectFieldElement("field-error", uuid);
-    const uploadSuccessEl = this._selectFieldElement("upload-success", uuid);
+    const fieldErrorEl = this._selectFieldEl("field-error", uuid);
+    const uploadSuccessEl = this._selectFieldEl("upload-success", uuid);
+    const resetButtonEl = this._selectFieldEl("reset", uuid);
 
     const fileInput = document.createElement("input");
     fileInput.type = "file";
@@ -22,24 +23,25 @@ export class OSFileUpload extends HTMLElement {
 
     const showFieldError = (text) => {
       if (fieldErrorEl) {
-        this._showElement(fieldErrorEl);
+        this._showEl(fieldErrorEl);
         fieldErrorEl.innerText = text;
       } else {
         this._consoleWarn("field-error", uuid);
       }
     };
 
-    const showUploadSuccess = () => {
-      if (uploadSuccessEl) {
-        this._showElement(uploadSuccessEl);
+    const showSuccessEl = (el, attr) => {
+      if (el) {
+        this._showEl(el);
       } else {
-        this._consoleWarn("upload-success", uuid);
+        this._consoleWarn(attr, uuid);
       }
     };
 
     const resetElements = () => {
-      this._resetElement(fieldErrorEl);
-      this._hideElement(uploadSuccessEl);
+      this._resetEl(fieldErrorEl);
+      this._hideEl(uploadSuccessEl);
+      this._hideEl(resetButtonEl);
       signedIdInput.value = "";
     };
 
@@ -49,7 +51,8 @@ export class OSFileUpload extends HTMLElement {
       if (error) {
         showFieldError(error);
       } else {
-        showUploadSuccess();
+        showSuccessEl(uploadSuccessEl, "upload-success");
+        showSuccessEl(resetButtonEl, "reset");
         signedIdInput.value = signedId;
       }
     };
@@ -77,32 +80,36 @@ export class OSFileUpload extends HTMLElement {
         }
       }
     });
+
+    if (resetButtonEl) {
+      resetButtonEl.addEventListener("click", (event) => {
+        event.preventDefault();
+        fileInput.value = "";
+        resetElements();
+      });
+    }
   }
 
-  _getElement(attr) {
-    return document.querySelector(`[${ATTRIBUTES.element}="${attr}"]`);
-  }
-
-  _showElement(el) {
+  _showEl(el) {
     if (el) {
       el.classList.remove(CLASSNAMES.hidden);
     }
   }
 
-  _hideElement(el) {
+  _hideEl(el) {
     if (el) {
       el.classList.add(CLASSNAMES.hidden);
     }
   }
 
-  _resetElement(el) {
+  _resetEl(el) {
     if (el) {
       el.classList.add(CLASSNAMES.hidden);
       el.innerText = "";
     }
   }
 
-  _selectFieldElement(attr, uuid) {
+  _selectFieldEl(attr, uuid) {
     return document.querySelector(
       `[${ATTRIBUTES.element}="${attr}"][${ATTRIBUTES.for}="${uuid}"]`,
     );

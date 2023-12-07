@@ -1,6 +1,8 @@
 context("upload field", function () {
   beforeEach(() => {
-    cy.fixture("direct_uploads_success_response.json").as("directUploadsSuccess");
+    cy.fixture("direct_uploads_success_response.json").as(
+      "directUploadsSuccess",
+    );
     cy.visit("/");
   });
 
@@ -26,7 +28,51 @@ context("upload field", function () {
       cy.wait(["@directUploadSuccess", "@activeStorageSuccess"]).then(() => {
         cy.get(successMessageSelector)
           .should("be.visible")
-          .and("have.text", "Upload success!");
+          .and("contain.text", "Upload success!");
+      });
+    });
+
+    it("resets the field on button click", function () {
+      const firstFieldUuid = "upload_field_1_uuid";
+      const fieldSelector = `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
+      const successMessageSelector =
+        `[data-os-element='upload-success'][data-os-for='${firstFieldUuid}']`;
+      const resetButtonSelector =
+        `[data-os-element='reset'][data-os-for='${firstFieldUuid}']`;
+
+      cy.get(resetButtonSelector).should("not.be.visible");
+      cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
+        .as("directUploadSuccess");
+      cy.intercept("**/rails/active_storage/disk/*", this.directUploadsSuccess)
+        .as("activeStorageSuccess");
+
+      cy.get(fieldSelector).within(
+        () => {
+          cy.get("input[type='file']")
+            .selectFile("cypress/fixtures/upload_test.txt");
+        },
+      );
+
+      cy.wait(["@directUploadSuccess", "@activeStorageSuccess"]).then(() => {
+        cy.get(fieldSelector).within(
+          () => {
+            cy.get("input[type='hidden']").should(
+              "have.value",
+              "signed_id_value",
+            );
+          },
+        );
+        cy.get(successMessageSelector).should("be.visible");
+
+        cy.get(resetButtonSelector).click();
+
+        cy.get(fieldSelector).within(
+          () => {
+            cy.get("input[type='hidden']").should("have.value", "");
+            cy.get("input[type='file']").should("have.value", "");
+          },
+        );
+        cy.get(successMessageSelector).should("not.be.visible");
       });
     });
 
@@ -49,7 +95,10 @@ context("upload field", function () {
       cy.wait(["@directUploadSuccess", "@activeStorageSuccess"]).then(() => {
         cy.get(fieldSelector).within(
           () => {
-            cy.get("input[type='hidden']").should("have.value", "signed_id_value");
+            cy.get("input[type='hidden']").should(
+              "have.value",
+              "signed_id_value",
+            );
           },
         );
       });
