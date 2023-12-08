@@ -33,11 +33,11 @@
 
 The following script versions will be uploaded:
 
-1. **`os-forms-v*.min.js`**: These versions will be regularly updated and should be used for production.
+1. **`os-custom-elements-v*.min.js`**: These versions will be regularly updated and should be used for production.
 
-2. **`os-forms.[checksum].js`**: Unique versions identified by their checksum.
+2. **`os-custom-elements.[checksum].js`**: Unique versions identified by their checksum.
 
-3. **`os-forms.[checksum].min.js`**: Minified versions corresponding to the unique checksums.
+3. **`os-custom-elements.[checksum].min.js`**: Minified versions corresponding to the unique checksums.
 
 ### Retrieve Build URL
 
