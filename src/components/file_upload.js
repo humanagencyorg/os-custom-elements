@@ -28,7 +28,9 @@ export class OSFileUpload extends HTMLElement {
       const signedId = blob?.signed_id;
 
       if (error) {
-        this.dispatchEvent(new CustomEvent("upload-error", { detail: error }));
+        this.dispatchEvent(
+          new CustomEvent("upload-error", { detail: { error } }),
+        );
       } else {
         this.dispatchEvent(uploadSuccessEvent);
         signedIdInput.value = signedId;
