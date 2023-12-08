@@ -31,6 +31,7 @@ export class OSFileUpload extends HTMLElement {
     };
 
     fileInput.addEventListener("change", async (event) => {
+      signedIdInput.value = "";
       this.dispatchEvent(new CustomEvent("upload-change"));
 
       const file = event.target.files[0];
