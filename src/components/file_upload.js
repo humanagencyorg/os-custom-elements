@@ -8,10 +8,13 @@ export class OSFileUpload extends HTMLElement {
   }
 
   connectedCallback() {
-    const fileSizeErrorText = "File size exceeds the limit of 25MB. Please select a smaller file.";
+    const fileSizeErrorText =
+      "File size exceeds the limit of 25MB. Please select a smaller file.";
     const uploadErrorEvent = new CustomEvent("upload-error");
     const uploadSuccessEvent = new CustomEvent("upload-success");
-    const fileSizeErrorEvent = new CustomEvent("file-size-error", { text: fileSizeErrorText });
+    const fileSizeErrorEvent = new CustomEvent("file-size-error", {
+      detail: { text: fileSizeErrorText },
+    });
 
     const fileInput = document.createElement("input");
     fileInput.type = "file";
