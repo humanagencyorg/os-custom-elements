@@ -1,8 +1,9 @@
-let workspaceId;
+let workspaceId, directUploadsHost;
 
 const currentScript = document.currentScript;
 if (currentScript) {
   workspaceId = getWorkspaceId(currentScript.src);
+  directUploadsHost = currentScript.getAttribute("data-os-host");
 }
 
 function getWorkspaceId(url) {
@@ -14,4 +15,4 @@ function getWorkspaceId(url) {
   }
 }
 
-export default workspaceId;
+export { workspaceId, directUploadsHost };

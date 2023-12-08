@@ -1,6 +1,6 @@
 import { ALLOWED_FILE_TYPES } from "../utils/constants";
 import { Uploader } from "../utils/uploader";
-import workspaceId from "../utils/workspace_id";
+import { workspaceId, directUploadsHost } from "../utils/script_attributes";
 
 export class OSFileUpload extends HTMLElement {
   constructor() {
@@ -45,10 +45,10 @@ export class OSFileUpload extends HTMLElement {
             new CustomEvent("upload-error", { detail: { error: text } }),
           );
         } else {
+          const host = directUploadsHost || "app.formli.com";
           const uploader = new Uploader(
             file,
-            // TODO: change the host
-            "https://avala-3461.formliapp.com/rails/active_storage/direct_uploads",
+            `https://${host}/rails/active_storage/direct_uploads`,
             workspaceId,
             () => {},
             handleUpload,
