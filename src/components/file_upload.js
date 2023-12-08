@@ -8,8 +8,6 @@ export class OSFileUpload extends HTMLElement {
   }
 
   connectedCallback() {
-    const uploadSuccessEvent = new CustomEvent("upload-success");
-
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = ALLOWED_FILE_TYPES;
@@ -27,12 +25,14 @@ export class OSFileUpload extends HTMLElement {
           new CustomEvent("upload-error", { detail: { error } }),
         );
       } else {
-        this.dispatchEvent(uploadSuccessEvent);
+        this.dispatchEvent(new CustomEvent("upload-success"));
         signedIdInput.value = signedId;
       }
     };
 
     fileInput.addEventListener("change", async (event) => {
+      this.dispatchEvent(new CustomEvent("upload-change"));
+
       const file = event.target.files[0];
       const maxSizeInBytes = 25 * 1024 * 1024; // 25MB in bytes
 
