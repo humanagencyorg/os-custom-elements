@@ -2,12 +2,13 @@ let workspaceId, directUploadsHost;
 
 const currentScript = document.currentScript;
 if (currentScript) {
-  workspaceId = getWorkspaceId(currentScript.src);
-  directUploadsHost = currentScript.getAttribute("data-os-host");
+  const workspaceIdRegex = /[?&]workspace-id=([^&]+)/;
+  const hostRegex = /[?&]host=([^&]+)/;
+  workspaceId = getUrlParam(currentScript.src, workspaceIdRegex);
+  directUploadsHost = getUrlParam(currentScript.src, hostRegex);
 }
 
-function getWorkspaceId(url) {
-  const regex = /[?&]workspace-id=([^&]+)/;
+function getUrlParam(url, regex) {
   const match = url.match(regex);
 
   if (match && match[1]) {
