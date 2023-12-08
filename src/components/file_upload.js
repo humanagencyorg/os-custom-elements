@@ -1,6 +1,22 @@
 import { ALLOWED_FILE_TYPES, ATTRIBUTES, CLASSNAMES } from "../utils/constants";
 import { Uploader } from "../utils/uploader";
 
+let workspaceId;
+
+const currentScript = document.currentScript;
+if (currentScript) {
+  workspaceId = getWorkspaceId(currentScript.src);
+}
+
+function getWorkspaceId(url) {
+  const regex = /[?&]workspace-id=([^&]+)/;
+  const match = url.match(regex);
+
+  if (match && match[1]) {
+    return match[1];
+  }
+}
+
 export class OSFileUpload extends HTMLElement {
   constructor() {
     super();
@@ -72,6 +88,7 @@ export class OSFileUpload extends HTMLElement {
             file,
             // TODO: change the host
             "https://avala-3461.formliapp.com/rails/active_storage/direct_uploads",
+            workspaceId,
             () => {},
             handleUpload,
           );
