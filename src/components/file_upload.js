@@ -46,7 +46,6 @@ export class OSFileUpload extends HTMLElement {
           );
         } else {
           const host = directUploadsHost || "app.formli.com";
-          console.log(host)
           const uploader = new Uploader(
             file,
             `https://${host}/rails/active_storage/direct_uploads`,
