@@ -8,12 +8,7 @@ export class OSFileUpload extends HTMLElement {
   }
 
   connectedCallback() {
-    const fileSizeErrorText =
-      "File size exceeds the limit of 25MB. Please select a smaller file.";
     const uploadSuccessEvent = new CustomEvent("upload-success");
-    const fileSizeErrorEvent = new CustomEvent("file-size-error", {
-      detail: { text: fileSizeErrorText },
-    });
 
     const fileInput = document.createElement("input");
     fileInput.type = "file";
@@ -43,7 +38,11 @@ export class OSFileUpload extends HTMLElement {
 
       if (file) {
         if (file.size > maxSizeInBytes) {
-          this.dispatchEvent(fileSizeErrorEvent);
+          const text =
+            "File size exceeds the limit of 25MB. Please select a smaller file.";
+          this.dispatchEvent(
+            new CustomEvent("upload-error", { detail: { error: text } }),
+          );
         } else {
           const uploader = new Uploader(
             file,
