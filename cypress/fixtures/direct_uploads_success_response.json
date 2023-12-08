@@ -1,0 +1,6 @@
+{
+  "signed_id": "signed_id_value",
+  "direct_upload": {
+    "url": "http://localhost:3000/rails/active_storage/disk/x"
+  }
+}

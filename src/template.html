@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script defer src="<%= os_custom_elements %>?workspace-id=1&host=увау.com"></script>
+    <style>
+      .os-hidden {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h3>File upload fields</h3>
+    <div>
+      <os-file-upload
+        data-os-element="upload"
+        data-os-uuid="upload_field_1_uuid"
+      ></os-file-upload>
+    </div>
+    <div>
+      <os-file-upload
+        data-os-element="upload"
+        data-os-uuid="upload_field_2_uuid"
+      ></os-file-upload>
+    </div>
+  </body>
+</html>
