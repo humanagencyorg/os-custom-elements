@@ -58,5 +58,10 @@ export class OSFileUpload extends HTMLElement {
         }
       }
     });
+
+    this.addEventListener("upload-reset", () => {
+      signedIdInput.value = "";
+      fileInput.value = "";
+    });
   }
 }
