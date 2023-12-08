@@ -10,7 +10,6 @@ export class OSFileUpload extends HTMLElement {
   connectedCallback() {
     const fileSizeErrorText =
       "File size exceeds the limit of 25MB. Please select a smaller file.";
-    const uploadErrorEvent = new CustomEvent("upload-error");
     const uploadSuccessEvent = new CustomEvent("upload-success");
     const fileSizeErrorEvent = new CustomEvent("file-size-error", {
       detail: { text: fileSizeErrorText },
@@ -29,7 +28,7 @@ export class OSFileUpload extends HTMLElement {
       const signedId = blob?.signed_id;
 
       if (error) {
-        this.dispatchEvent(uploadErrorEvent);
+        this.dispatchEvent(new CustomEvent("upload-error", { detail: error }));
       } else {
         this.dispatchEvent(uploadSuccessEvent);
         signedIdInput.value = signedId;
