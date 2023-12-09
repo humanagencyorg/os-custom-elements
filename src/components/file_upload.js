@@ -48,7 +48,7 @@ export class OSFileUpload extends HTMLElement {
           const host = directUploadsHost || "https://app.formli.com";
           const uploader = new Uploader(
             file,
-            `${host}/rails/active_storage/direct_uploads`,
+            `${host}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
             workspaceId,
             () => {},
             handleUpload,
