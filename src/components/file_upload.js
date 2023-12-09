@@ -45,10 +45,10 @@ export class OSFileUpload extends HTMLElement {
             new CustomEvent("upload-error", { detail: { error: text } }),
           );
         } else {
-          const host = directUploadsHost || "app.formli.com";
+          const host = directUploadsHost || "https://app.formli.com";
           const uploader = new Uploader(
             file,
-            `https://${host}/rails/active_storage/direct_uploads`,
+            `${host}/rails/active_storage/direct_uploads`,
             workspaceId,
             () => {},
             handleUpload,
