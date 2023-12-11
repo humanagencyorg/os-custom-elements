@@ -6,7 +6,7 @@ context("upload field", function () {
     cy.visit("/");
   });
 
-  it("passes workspace-id from the script src to the Uploader headers param", function () {
+  it("passes workspace-id from the script src to the Uploader request query", function () {
     const firstFieldUuid = "upload_field_1_uuid";
 
     cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
@@ -22,7 +22,7 @@ context("upload field", function () {
 
     cy.wait(["@directUploadSuccess", "@activeStorageSuccess"]).then(
       (intercepts) => {
-        expect(intercepts[0].request.headers["workspace-id"]).to.equal("1");
+        expect(intercepts[0].request.query.workspace_id).to.equal("1");
       },
     );
   });

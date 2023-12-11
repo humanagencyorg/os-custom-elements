@@ -49,7 +49,6 @@ export class OSFileUpload extends HTMLElement {
           const uploader = new Uploader(
             file,
             `${host}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
-            workspaceId,
             () => {},
             handleUpload,
           );
