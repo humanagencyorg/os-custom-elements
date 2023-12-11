@@ -1,13 +1,12 @@
 import { DirectUpload } from "@rails/activestorage";
 
 export class Uploader {
-  constructor(file, url, workspaceId, onProgress, onComplete) {
-    const headers = { "Workspace-Id": workspaceId };
+  constructor(file, url, onProgress, onComplete) {
     this.file = file;
     this.url = url;
     this.onProgress = onProgress;
     this.onComplete = onComplete;
-    this.upload = new DirectUpload(this.file, this.url, this, headers);
+    this.upload = new DirectUpload(this.file, this.url, this);
   }
 
   start() {
