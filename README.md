@@ -52,19 +52,19 @@ The following script versions will be uploaded:
 3. Note the build name from the subsequent line, which looks like:
 
     ```bash
-    upload: dist/os-forms-v1.min.js to s3://avala-html-form-script/html-forms/os-custom-elements-v1.min.js
+    upload: dist/os-forms-v1.min.js to s3://avala-html-form-script/elements/os-custom-elements-v1.min.js
     ```
 
 4. Copy the script name and build URL. The script URL for this specific build will be:
 
-    - For the `master` branch:
+    - For the `main` branch:
 
         ```bash
-        https://cdn.formli.com/os-custom-elements/os-custom-elements-v1.min.js
+        https://cdn.formli.com/elements/os-custom-elements-v1.min.js
         ```
 
     - For other branches:
 
         ```bash
-        https://avala-test-html-form-script.s3.us-east-2.amazonaws.com/os-custom-elements/os-custom-elements-v1.min.js
+        https://avala-test-html-form-script.s3.us-east-2.amazonaws.com/elements/os-custom-elements-v1.min.js
         ```
