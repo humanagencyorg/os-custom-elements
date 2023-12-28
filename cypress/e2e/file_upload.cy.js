@@ -1,8 +1,6 @@
 context("upload field", function () {
   beforeEach(() => {
-    cy.fixture("direct_uploads_success_response.json").as(
-      "directUploadsSuccess",
-    );
+    cy.fixture("direct_uploads_response.json").as("directUploadsSuccess");
     cy.visit("/");
   });
 
