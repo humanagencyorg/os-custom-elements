@@ -4,6 +4,7 @@ export class OSCountry extends HTMLElement {
   }
 
   connectedCallback() {
+    const defaultValue = this.getAttribute("value");
     const selectEl = document.createElement("select");
     this.appendChild(selectEl);
 
@@ -21,6 +22,10 @@ export class OSCountry extends HTMLElement {
             option.textContent = name;
             option.value = value;
             selectEl.appendChild(option);
+          }
+
+          if (defaultValue) {
+            selectEl.value = defaultValue;
           }
         }
       })

@@ -15,5 +15,15 @@ context("country field", function () {
         cy.get("select").find("option").eq(1).should("have.text", "Canada");
       });
     });
+
+    it("sets default value from the attribute", function () {
+      cy.intercept("GET", "**/api/v1/countries", this.countriesResponse)
+        .as("countriesSuccess");
+      cy.visit("/");
+
+      cy.wait("@countriesSuccess").then(() => {
+        cy.get("select").should("have.value", "UA");
+      });
+    });
   });
 });
