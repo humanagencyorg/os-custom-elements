@@ -32,5 +32,9 @@ export class OSCountry extends HTMLElement {
       .catch((error) => {
         console.error(error);
       });
+
+    selectEl.addEventListener("change", (event) => {
+      this.setAttribute("value", event.target.value);
+    });
   }
 }
