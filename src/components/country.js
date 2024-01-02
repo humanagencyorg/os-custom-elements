@@ -24,12 +24,13 @@ export class OSCountry extends HTMLElement {
       .then(async (response) => {
         if (response.ok) {
           const countries = await response.json();
-          for (const [value, name] of Object.entries(countries)) {
+
+          countries.data.forEach((country) => {
             const option = document.createElement("option");
-            option.textContent = name;
-            option.value = value;
+            option.textContent = country.name;
+            option.value = country.code;
             selectEl.appendChild(option);
-          }
+          });
 
           if (defaultValue) {
             selectEl.value = defaultValue;

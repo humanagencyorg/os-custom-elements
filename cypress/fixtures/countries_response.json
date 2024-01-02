@@ -1,5 +1,16 @@
 {
-  "CA": "Canada",
-  "UA": "Ukraine",
-  "US": "United States"
+  "data": [
+    {
+      "code": "CA",
+      "name": "Canada"
+    },
+    {
+      "code": "UA",
+      "name": "Ukraine"
+    },
+    {
+      "code": "US",
+      "name": "United states"
+    }
+  ]
 }
