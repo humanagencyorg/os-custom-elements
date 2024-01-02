@@ -12,7 +12,6 @@ export class OSCountry extends HTMLElement {
     const selectEl = document.createElement("select");
     this.appendChild(selectEl);
 
-    console.log('script');
     const emptyOption = this.createOption("", "")
     selectEl.appendChild(emptyOption);
 

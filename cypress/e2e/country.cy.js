@@ -22,16 +22,14 @@ context("country field", function() {
       cy.visit("/").then(() => {
         cy.request("/").then((response) => {
           const bodyWithInvalidField = `
-        <body>
-          <!-- Your modified HTML content here -->
-          <os-country data-os-element="country" value="ModifiedContent"></os-country>
-        </body>
-      `;
+            <body>
+              <os-country data-os-element="country" value="UA"></os-country>
+            </body>
+          `;
 
           // Replace the body content in the HTML
           const modifiedHtml = response.body.replace(/<body>[\s\S]*<\/body>/, bodyWithInvalidField);
 
-          // Stub the response for "/with-invalid-field" with the modified HTML
           cy.intercept("/with-invalid-field", modifiedHtml);
         });
       });
