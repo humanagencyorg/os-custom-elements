@@ -1,11 +1,11 @@
-let workspaceId, directUploadsHost;
+let workspaceId, host;
 
 const currentScript = document.currentScript;
 if (currentScript) {
   const workspaceIdRegex = /[?&]workspace-id=([^&]+)/;
   const hostRegex = /[?&]host=([^&]+)/;
   workspaceId = getUrlParam(currentScript.src, workspaceIdRegex);
-  directUploadsHost = getUrlParam(currentScript.src, hostRegex);
+  host = getUrlParam(currentScript.src, hostRegex);
 }
 
 function getUrlParam(url, regex) {
@@ -16,4 +16,4 @@ function getUrlParam(url, regex) {
   }
 }
 
-export { workspaceId, directUploadsHost };
+export { workspaceId, host };

@@ -1,4 +1,4 @@
-import { workspaceId } from "../utils/script_attributes";
+import { host, workspaceId } from "../utils/script_attributes";
 
 export class OSCountry extends HTMLElement {
   constructor() {
@@ -15,7 +15,8 @@ export class OSCountry extends HTMLElement {
     emptyOption.value = "";
     selectEl.appendChild(emptyOption);
 
-    fetch("https://avala-3480.formliapp.com/api/v1/countries", {
+    const requestHost = host || "https://avala-3480.formliapp.com";
+    fetch(`${requestHost}/api/v1/countries`, {
       headers: {
         "Workspace-Id": workspaceId,
       },
