@@ -15,7 +15,8 @@ export class OSCountry extends HTMLElement {
     emptyOption.value = "";
     selectEl.appendChild(emptyOption);
 
-    const requestHost = host || "https://avala-3480.formliapp.com";
+    const requestHost = host || "https://app.formli.com";
+
     fetch(`${requestHost}/api/v1/countries`, {
       headers: {
         "Workspace-Id": workspaceId,
