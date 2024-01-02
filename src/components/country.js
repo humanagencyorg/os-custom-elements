@@ -1,3 +1,5 @@
+import { workspaceId } from "../utils/script_attributes";
+
 export class OSCountry extends HTMLElement {
   constructor() {
     super();
@@ -13,7 +15,11 @@ export class OSCountry extends HTMLElement {
     emptyOption.value = "";
     selectEl.appendChild(emptyOption);
 
-    fetch("https://avala-3480.formliapp.com/api/v1/countries")
+    fetch("https://avala-3480.formliapp.com/api/v1/countries", {
+      headers: {
+        "Workspace-Id": workspaceId,
+      },
+    })
       .then(async (response) => {
         if (response.ok) {
           const countries = await response.json();
@@ -27,6 +33,8 @@ export class OSCountry extends HTMLElement {
           if (defaultValue) {
             selectEl.value = defaultValue;
           }
+        } else {
+          console.error("Something went wrong. Try again later.");
         }
       })
       .catch((error) => {
