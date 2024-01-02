@@ -17,14 +17,32 @@ context("country field", function() {
 
 
   describe("when element tag missing 'data-os-uuid' tag", () => {
+    beforeEach(() => {
+      // Visit the initial page to get its HTML
+      cy.visit("/").then(() => {
+        cy.request("/").then((response) => {
+          const bodyWithInvalidField = `
+        <body>
+          <!-- Your modified HTML content here -->
+          <os-country data-os-element="country" value="ModifiedContent"></os-country>
+        </body>
+      `;
+
+          // Replace the body content in the HTML
+          const modifiedHtml = response.body.replace(/<body>[\s\S]*<\/body>/, bodyWithInvalidField);
+
+          // Stub the response for "/with-invalid-field" with the modified HTML
+          cy.intercept("/with-invalid-field", modifiedHtml);
+        });
+      });
+    });
+
     it("warns user in console", function() {
-      cy.visit("/", {
+      cy.visit("/with-invalid-field", {
         onBeforeLoad(win) {
           cy.stub(win.console, "warn").as("consoleWarn");
         },
       });
-
-      // NOTE: Need to remove 'data-os-uuid' from <os-county> tag.
 
       cy.get("@consoleWarn").should(
         "be.calledWith",
@@ -35,9 +53,7 @@ context("country field", function() {
     it("does not make API request with null uuid", function() {
       cy.intercept("GET", "**/api/v1/data_fields/**/countries").as("countriesRequest");
 
-      // NOTE: Need to remove 'data-os-uuid' from <os-county> tag.
-
-      cy.visit("/");
+      cy.visit("/with-invalid-field");
       cy.wait(500);
 
       cy.get("@countriesRequest.all").should("have.length", 0);
