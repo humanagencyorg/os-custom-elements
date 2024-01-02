@@ -4,7 +4,7 @@ context("country field", function () {
   });
 
   it("passes workspace id from the script src to the request headers", function () {
-      cy.intercept("GET", "**/api/v1/countries", this.countriesResponse)
+      cy.intercept("GET", "**/api/v1/data_fields/country_field_uuid/countries", this.countriesResponse)
         .as("countriesSuccess");
       cy.visit("/");
 
@@ -18,7 +18,7 @@ context("country field", function () {
 
   describe("when countries request succeeded", () => {
     it("populates select options", function () {
-      cy.intercept("GET", "**/api/v1/countries", this.countriesResponse)
+      cy.intercept("GET", "**/api/v1/data_fields/country_field_uuid/countries", this.countriesResponse)
         .as("countriesSuccess");
       cy.visit("/");
 
@@ -30,7 +30,7 @@ context("country field", function () {
     });
 
     it("sets default value from the attribute", function () {
-      cy.intercept("GET", "**/api/v1/countries", this.countriesResponse)
+      cy.intercept("GET", "**/api/v1/data_fields/country_field_uuid/countries", this.countriesResponse)
         .as("countriesSuccess");
       cy.visit("/");
 
@@ -40,7 +40,7 @@ context("country field", function () {
     });
 
     it("sets custom tag value on country select", function () {
-      cy.intercept("GET", "**/api/v1/countries", this.countriesResponse)
+      cy.intercept("GET", "**/api/v1/data_fields/country_field_uuid/countries", this.countriesResponse)
         .as("countriesSuccess");
       cy.visit("/");
 

@@ -7,6 +7,7 @@ export class OSCountry extends HTMLElement {
 
   connectedCallback() {
     const defaultValue = this.getAttribute("value");
+    const dataFieldUuid = this.getAttribute("data-os-uuid")
     const selectEl = document.createElement("select");
     this.appendChild(selectEl);
 
@@ -17,7 +18,7 @@ export class OSCountry extends HTMLElement {
 
     const requestHost = host || "https://app.formli.com";
 
-    fetch(`${requestHost}/api/v1/countries`, {
+    fetch(`${requestHost}/api/v1/data_fields/${dataFieldUuid}/countries`, {
       headers: {
         "Workspace-Id": workspaceId,
       },
