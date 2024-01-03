@@ -14,7 +14,7 @@ export class OSCountry extends HTMLElement {
     const emptyOption = this.createOption("", "");
     selectEl.appendChild(emptyOption);
 
-    const requestHost = host || "https://avala-3480.formliapp.com";
+    const requestHost = host || "https://app.formli.com";
 
     if (dataFieldUuid) {
       fetch(`${requestHost}/api/v1/data_fields/${dataFieldUuid}/countries`, {
