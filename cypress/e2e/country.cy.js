@@ -1,10 +1,14 @@
-context("country field", function() {
+context("country field", function () {
   beforeEach(() => {
     cy.fixture("countries_response.json").as("countriesResponse");
   });
 
-  it("passes workspace id from the script src to the request headers", function() {
-    cy.intercept("GET", "**/api/v1/data_fields/country_field_uuid/countries", this.countriesResponse)
+  it("passes workspace id from the script src to the request headers", function () {
+    cy.intercept(
+      "GET",
+      "**/api/v1/data_fields/country_field_uuid/countries",
+      this.countriesResponse,
+    )
       .as("countriesSuccess");
     cy.visit("/");
 
@@ -15,8 +19,7 @@ context("country field", function() {
     );
   });
 
-
-  describe("when element tag missing 'data-os-uuid' tag", () => {
+  describe("when element tag missing 'data-os-uuid' attribute", () => {
     beforeEach(() => {
       // Visit the initial page to get its HTML
       cy.visit("/").then(() => {
@@ -28,14 +31,17 @@ context("country field", function() {
           `;
 
           // Replace the body content in the HTML
-          const modifiedHtml = response.body.replace(/<body>[\s\S]*<\/body>/, bodyWithInvalidField);
+          const modifiedHtml = response.body.replace(
+            /<body>[\s\S]*<\/body>/,
+            bodyWithInvalidField,
+          );
 
           cy.intercept("/with-invalid-field", modifiedHtml);
         });
       });
     });
 
-    it("warns user in console", function() {
+    it("warns user in console", function () {
       cy.visit("/with-invalid-field", {
         onBeforeLoad(win) {
           cy.stub(win.console, "warn").as("consoleWarn");
@@ -48,19 +54,25 @@ context("country field", function() {
       );
     });
 
-    it("does not make API request with null uuid", function() {
-      cy.intercept("GET", "**/api/v1/data_fields/**/countries").as("countriesRequest");
+    it("does not make API request with null uuid", function () {
+      cy.intercept("GET", "**/api/v1/data_fields/**/countries").as(
+        "countriesRequest",
+      );
 
       cy.visit("/with-invalid-field");
       cy.wait(500);
 
       cy.get("@countriesRequest.all").should("have.length", 0);
     });
-  })
+  });
 
   describe("when countries request succeeded", () => {
-    it("populates select options", function() {
-      cy.intercept("GET", "**/api/v1/data_fields/country_field_uuid/countries", this.countriesResponse)
+    it("populates select options", function () {
+      cy.intercept(
+        "GET",
+        "**/api/v1/data_fields/country_field_uuid/countries",
+        this.countriesResponse,
+      )
         .as("countriesSuccess");
       cy.visit("/");
 
@@ -71,8 +83,12 @@ context("country field", function() {
       });
     });
 
-    it("sets default value from the attribute", function() {
-      cy.intercept("GET", "**/api/v1/data_fields/country_field_uuid/countries", this.countriesResponse)
+    it("sets default value from the attribute", function () {
+      cy.intercept(
+        "GET",
+        "**/api/v1/data_fields/country_field_uuid/countries",
+        this.countriesResponse,
+      )
         .as("countriesSuccess");
       cy.visit("/");
 
@@ -81,8 +97,12 @@ context("country field", function() {
       });
     });
 
-    it("sets custom tag value on country select", function() {
-      cy.intercept("GET", "**/api/v1/data_fields/country_field_uuid/countries", this.countriesResponse)
+    it("sets custom tag value on country select", function () {
+      cy.intercept(
+        "GET",
+        "**/api/v1/data_fields/country_field_uuid/countries",
+        this.countriesResponse,
+      )
         .as("countriesSuccess");
       cy.visit("/");
 

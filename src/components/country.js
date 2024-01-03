@@ -5,14 +5,13 @@ export class OSCountry extends HTMLElement {
     super();
   }
 
-
   connectedCallback() {
     const defaultValue = this.getAttribute("value");
-    const dataFieldUuid = this.getAttribute("data-os-uuid")
+    const dataFieldUuid = this.getAttribute("data-os-uuid");
     const selectEl = document.createElement("select");
     this.appendChild(selectEl);
 
-    const emptyOption = this.createOption("", "")
+    const emptyOption = this.createOption("", "");
     selectEl.appendChild(emptyOption);
 
     const requestHost = host || "https://app.formli.com";
@@ -43,7 +42,7 @@ export class OSCountry extends HTMLElement {
           console.error(error);
         });
     } else {
-      console.warn("data-os-uuid was not found for <os-county> element")
+      console.warn("data-os-uuid was not found for <os-county> element");
     }
 
     selectEl.addEventListener("change", (event) => {
