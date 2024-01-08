@@ -1,6 +1,6 @@
 import { ALLOWED_FILE_TYPES } from "../utils/constants";
 import { Uploader } from "../utils/uploader";
-import { workspaceId, directUploadsHost } from "../utils/script_attributes";
+import { workspaceId, host } from "../utils/script_attributes";
 
 export class OSFileUpload extends HTMLElement {
   constructor() {
@@ -45,10 +45,10 @@ export class OSFileUpload extends HTMLElement {
             new CustomEvent("upload-error", { detail: { error: text } }),
           );
         } else {
-          const host = directUploadsHost || "https://app.formli.com";
+          const requestHost = host || "https://app.formli.com";
           const uploader = new Uploader(
             file,
-            `${host}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
+            `${requestHost}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
             () => {},
             handleUpload,
           );
