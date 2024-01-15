@@ -34,8 +34,6 @@ export class OSCountry extends HTMLElement {
             if (defaultValue) {
               selectEl.value = defaultValue;
             }
-
-            this.dispatchEvent(new CustomEvent("country-success"));
           } else {
             console.error("Something went wrong. Try again later.");
           }
