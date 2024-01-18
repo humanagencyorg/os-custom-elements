@@ -25,7 +25,7 @@ export class OSFileUpload extends HTMLElement {
           new CustomEvent("upload-error", { detail: { error } }),
         );
       } else {
-        this.dispatchEvent(new CustomEvent("upload-success"));
+        this.dispatchEvent(new CustomEvent("upload-success", { detail: { signed_id: signedId }}));
         signedIdInput.value = signedId;
       }
     };
