@@ -1,6 +1,6 @@
 import { ALLOWED_FILE_TYPES } from "../utils/constants";
 import { Uploader } from "../utils/uploader";
-import { workspaceId, host } from "../utils/script_attributes";
+import { host, workspaceId } from "../utils/script_attributes";
 
 export class OSFileUpload extends HTMLElement {
   constructor() {
@@ -10,12 +10,9 @@ export class OSFileUpload extends HTMLElement {
   connectedCallback() {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
+    fileInput.multiple = "true";
     fileInput.accept = ALLOWED_FILE_TYPES;
     this.appendChild(fileInput);
-
-    const signedIdInput = document.createElement("input");
-    signedIdInput.type = "hidden";
-    this.appendChild(signedIdInput);
 
     const handleUpload = (error, blob) => {
       const signedId = blob?.signed_id;
@@ -26,41 +23,54 @@ export class OSFileUpload extends HTMLElement {
         );
       } else {
         this.dispatchEvent(new CustomEvent("upload-success"));
+        const signedIdInput = document.createElement("input");
+        signedIdInput.type = "hidden";
         signedIdInput.value = signedId;
+
+        this.appendChild(signedIdInput);
       }
     };
 
     fileInput.addEventListener("change", async (event) => {
-      signedIdInput.value = "";
       this.dispatchEvent(new CustomEvent("upload-change"));
+      this.removeSignedIdInputs();
 
-      const file = event.target.files[0];
+      const files = Array.from(event.target.files);
       const maxSizeInBytes = 25 * 1024 * 1024; // 25MB in bytes
 
-      if (file) {
-        if (file.size > maxSizeInBytes) {
-          const text =
-            "File size exceeds the limit of 25MB. Please select a smaller file.";
-          this.dispatchEvent(
-            new CustomEvent("upload-error", { detail: { error: text } }),
-          );
-        } else {
-          const requestHost = host || "https://app.formli.com";
-          const uploader = new Uploader(
-            file,
-            `${requestHost}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
-            () => {},
-            handleUpload,
-          );
+      files.forEach((file) => {
+        if (file) {
+          if (file.size > maxSizeInBytes) {
+            const text =
+              "File size exceeds the limit of 25MB. Please select a smaller file.";
+            this.dispatchEvent(
+              new CustomEvent("upload-error", { detail: { error: text } }),
+            );
+          } else {
+            const requestHost = host || "https://app.formli.com";
+            const uploader = new Uploader(
+              file,
+              `${requestHost}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
+              () => {},
+              handleUpload,
+            );
 
-          uploader.start();
+            uploader.start();
+          }
         }
-      }
+      });
     });
 
     this.addEventListener("upload-reset", () => {
-      signedIdInput.value = "";
+      this.removeSignedIdInputs();
       fileInput.value = "";
     });
+  }
+
+  removeSignedIdInputs() {
+    const signedIdInputs = this.querySelectorAll("input[type='hidden']");
+    signedIdInputs.forEach((input) => {
+      this.removeChild(input);
+    })
   }
 }
