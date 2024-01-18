@@ -5,6 +5,8 @@ import { host, workspaceId } from "../utils/script_attributes";
 export class OSFileUpload extends HTMLElement {
   constructor() {
     super();
+    this.uploadCounter = 0;
+    this.totalFiles = 0;
   }
 
   connectedCallback() {
@@ -15,6 +17,7 @@ export class OSFileUpload extends HTMLElement {
     this.appendChild(fileInput);
 
     const handleUpload = (error, blob) => {
+      this.uploadCounter++;
       const signedId = blob?.signed_id;
 
       if (error) {
@@ -22,12 +25,16 @@ export class OSFileUpload extends HTMLElement {
           new CustomEvent("upload-error", { detail: { error } }),
         );
       } else {
-        this.dispatchEvent(new CustomEvent("upload-success"));
         const signedIdInput = document.createElement("input");
         signedIdInput.type = "hidden";
         signedIdInput.value = signedId;
 
         this.appendChild(signedIdInput);
+        if (this.uploadCounter === this.totalFiles) {
+          console.log('WOW')
+          this.dispatchEvent(new CustomEvent("upload-success"));
+          this.uploadCounter = 0;
+        }
       }
     };
 
@@ -35,8 +42,11 @@ export class OSFileUpload extends HTMLElement {
       this.dispatchEvent(new CustomEvent("upload-change"));
       this.removeSignedIdInputs();
 
-      const files = Array.from(event.target.files);
       const maxSizeInBytes = 25 * 1024 * 1024; // 25MB in bytes
+      const files = Array.from(event.target.files);
+
+      this.totalFiles = files.length;
+      this.uploadCounter = 0;
 
       files.forEach((file) => {
         if (file) {
