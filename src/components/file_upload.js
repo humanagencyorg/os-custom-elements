@@ -37,7 +37,7 @@ export class OSFileUpload extends HTMLElement {
 
         this.appendChild(signedIdInput);
         // Remove the completed uploader from the list
-        this.uploaders = this.uploaders.filter((u) => u.file !== blob.file);
+        this.uploaders = this.uploaders.filter((u) => u.file.name !== blob.filename);
         if (this.uploadCounter === this.totalFiles) {
           this.dispatchEvent(new CustomEvent("upload-success"));
           this.uploadCounter = 0;
