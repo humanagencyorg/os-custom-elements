@@ -7,13 +7,21 @@ export class Uploader {
     this.onProgress = onProgress;
     this.onComplete = onComplete;
     this.upload = new DirectUpload(this.file, this.url, this);
+    this.xhr = null;
   }
 
   start() {
     this.upload.create(this.onComplete);
   }
 
+  abort() {
+    if (this.xhr) {
+      this.xhr.abort();
+    }
+  }
+
   directUploadWillStoreFileWithXHR(request) {
+    this.xhr = request;
     request.upload.addEventListener(
       "progress",
       (event) => this.directUploadDidProgress(event),
