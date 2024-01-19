@@ -7,7 +7,8 @@ export class OSFileUpload extends HTMLElement {
     super();
     this.uploadCounter = 0;
     this.totalFiles = 0;
-    this.activeUploads = [];
+    this.uploaders = [];
+    this.completedUploadIds = [];
   }
 
   connectedCallback() {
@@ -28,18 +29,20 @@ export class OSFileUpload extends HTMLElement {
         // Abort all ongoing uploads
         this.uploaders.forEach((uploader) => uploader.abort());
         this.uploaders = [];
+        this.completedUploadIds = [];
 
         uploadReset();
       } else {
         const signedIdInput = document.createElement("input");
         signedIdInput.type = "hidden";
         signedIdInput.value = signedId;
+        this.completedUploadIds.push(signedId);
 
         this.appendChild(signedIdInput);
         // Remove the completed uploader from the list
         this.uploaders = this.uploaders.filter((u) => u.file.name !== blob.filename);
         if (this.uploadCounter === this.totalFiles) {
-          this.dispatchEvent(new CustomEvent("upload-success"));
+          this.dispatchEvent(new CustomEvent("upload-success", { detail: { completedUploadIds: this.completedUploadIds }}));
           this.uploadCounter = 0;
         }
       }
@@ -54,6 +57,7 @@ export class OSFileUpload extends HTMLElement {
       this.totalFiles = files.length;
       this.uploadCounter = 0;
       this.uploaders = [];
+      this.completedUploadIds = [];
 
       if (this.filesHaveCorrectSize(files)) {
         files.forEach((file) => {
