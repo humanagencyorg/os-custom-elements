@@ -5,19 +5,18 @@ import { host, workspaceId } from "../utils/script_attributes";
 export class OSFileUpload extends HTMLElement {
   constructor() {
     super();
-    this.uploadCounter = 0;
-    this.totalFiles = 0;
   }
 
   connectedCallback() {
+    const fileInputWrapper = document.createElement("div");
+    this.appendChild(fileInputWrapper);
+
     const fileInput = document.createElement("input");
     fileInput.type = "file";
-    fileInput.multiple = "true";
     fileInput.accept = ALLOWED_FILE_TYPES;
-    this.appendChild(fileInput);
+    fileInputWrapper.appendChild(fileInput);
 
-    const handleUpload = (error, blob) => {
-      this.uploadCounter++;
+    const handleUpload = (error, blob, wrapper) => {
       const signedId = blob?.signed_id;
 
       if (error) {
@@ -29,58 +28,56 @@ export class OSFileUpload extends HTMLElement {
         signedIdInput.type = "hidden";
         signedIdInput.value = signedId;
 
-        this.appendChild(signedIdInput);
-        if (this.uploadCounter === this.totalFiles) {
-          console.log('WOW')
-          this.dispatchEvent(new CustomEvent("upload-success"));
-          this.uploadCounter = 0;
-        }
+        wrapper.appendChild(signedIdInput);
+        this.dispatchEvent(new CustomEvent("upload-success"));
       }
     };
 
     fileInput.addEventListener("change", async (event) => {
       this.dispatchEvent(new CustomEvent("upload-change"));
-      this.removeSignedIdInputs();
+      this.removeSignedIdInputs(fileInputWrapper);
 
       const maxSizeInBytes = 25 * 1024 * 1024; // 25MB in bytes
-      const files = Array.from(event.target.files);
+      const file = event.target.files[0];
 
-      this.totalFiles = files.length;
-      this.uploadCounter = 0;
+      if (file) {
+        if (file.size > maxSizeInBytes) {
+          const text =
+            "File size exceeds the limit of 25MB. Please select a smaller file.";
+          this.dispatchEvent(
+            new CustomEvent("upload-error", { detail: { error: text } }),
+          );
+        } else {
+          const requestHost = host || "https://app.formli.com";
+          const uploader = new Uploader(
+            file,
+            `${requestHost}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
+            () => {},
+            (error, blob) => handleUpload(error, blob, fileInputWrapper),
+          );
 
-      files.forEach((file) => {
-        if (file) {
-          if (file.size > maxSizeInBytes) {
-            const text =
-              "File size exceeds the limit of 25MB. Please select a smaller file.";
-            this.dispatchEvent(
-              new CustomEvent("upload-error", { detail: { error: text } }),
-            );
-          } else {
-            const requestHost = host || "https://app.formli.com";
-            const uploader = new Uploader(
-              file,
-              `${requestHost}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
-              () => {},
-              handleUpload,
-            );
-
-            uploader.start();
-          }
+          uploader.start();
         }
-      });
+      }
     });
 
     this.addEventListener("upload-reset", () => {
-      this.removeSignedIdInputs();
-      fileInput.value = "";
+      this.removeSignedIdInputs(this);
+      const fileInputs = this.querySelectorAll("input[type='file']");
+      fileInputs.forEach((input, index) => {
+        if (index === 0) {
+          input.value = "";
+        } else {
+          input.closest("div").remove();
+        }
+      });
     });
   }
 
-  removeSignedIdInputs() {
-    const signedIdInputs = this.querySelectorAll("input[type='hidden']");
+  removeSignedIdInputs(container) {
+    const signedIdInputs = container.querySelectorAll("input[type='hidden']");
     signedIdInputs.forEach((input) => {
-      this.removeChild(input);
-    })
+      input.remove();
+    });
   }
 }
