@@ -45,7 +45,7 @@ export class OSFileUpload extends HTMLElement {
     };
 
     fileInput.addEventListener("change", (event) => {
-      this.dispatchChangeEvent(e.target.value);
+      this.dispatchChangeEvent(event.target.value);
       this.removeSignedIdInputs();
 
       const files = Array.from(event.target.files);
