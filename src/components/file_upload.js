@@ -45,7 +45,7 @@ export class OSFileUpload extends HTMLElement {
     };
 
     fileInput.addEventListener("change", (event) => {
-      this.dispatchEvent(new CustomEvent("upload-change"));
+      this.dispatchChangeEvent(e.target.value);
       this.removeSignedIdInputs();
 
       const files = Array.from(event.target.files);
@@ -91,6 +91,12 @@ export class OSFileUpload extends HTMLElement {
     };
 
     this.addEventListener("upload-reset", uploadReset);
+  }
+
+  dispatchChangeEvent(value) {
+    this.dispatchEvent(
+      new CustomEvent("upload-change", { detail: { value } }),
+    );
   }
 
   dispatchErrorEvent(text) {
