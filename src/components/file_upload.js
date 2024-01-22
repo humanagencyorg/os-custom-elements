@@ -12,9 +12,10 @@ export class OSFileUpload extends HTMLElement {
   }
 
   connectedCallback() {
+    const filesLimit = this.getAttribute("data-os-files-limit");
     const fileInput = document.createElement("input");
     fileInput.type = "file";
-    fileInput.multiple = "true";
+    fileInput.multiple = !!filesLimit;
     fileInput.accept = ALLOWED_FILE_TYPES;
     this.appendChild(fileInput);
 
@@ -59,7 +60,14 @@ export class OSFileUpload extends HTMLElement {
       this.uploaders = [];
       this.completedUploadIds = [];
 
-      if (this.filesHaveCorrectSize(files)) {
+      if (filesLimit && files.length > Number(filesLimit)) {
+        const text =
+          `Limit of ${files.length} files`;
+        this.dispatchEvent(
+          new CustomEvent("upload-error", { detail: { error: text } }),
+        );
+        uploadReset();
+      } else if (this.filesHaveCorrectSize(files)) {
         files.forEach((file) => {
           const requestHost = host || "https://app.formli.com";
           const uploader = new Uploader(
