@@ -62,7 +62,7 @@ export class OSFileUpload extends HTMLElement {
 
       if (filesLimit && files.length > Number(filesLimit)) {
         const text =
-          `Limit of ${files.length} files`;
+          `Limit of ${filesLimit} files`;
         this.dispatchEvent(
           new CustomEvent("upload-error", { detail: { error: text } }),
         );
