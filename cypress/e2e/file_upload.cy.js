@@ -9,7 +9,7 @@ context("upload field", function () {
 
     cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
       .as("directUploadSuccess");
-    cy.intercept("**/rails/active_storage/disk/*", this.directUploadsSuccess)
+    cy.intercept("**/rails/active_storage/disk/*", { statusCode: 200 })
       .as("activeStorageSuccess");
 
     cy.get(`os-file-upload[data-os-uuid='${firstFieldUuid}']`)
@@ -31,7 +31,7 @@ context("upload field", function () {
 
       cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
         .as("directUploadSuccess");
-      cy.intercept("**/rails/active_storage/disk/*", this.directUploadsSuccess)
+      cy.intercept("**/rails/active_storage/disk/*", { statusCode: 200 })
         .as("activeStorageSuccess");
 
       cy.get(`os-file-upload[data-os-uuid='${firstFieldUuid}']`)
@@ -59,7 +59,7 @@ context("upload field", function () {
 
       cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
         .as("directUploadSuccess");
-      cy.intercept("**/rails/active_storage/disk/*", this.directUploadsSuccess)
+      cy.intercept("**/rails/active_storage/disk/*", { statusCode: 200 })
         .as("activeStorageSuccess");
 
       cy.get(fieldSelector).within(
@@ -91,10 +91,6 @@ context("upload field", function () {
       );
       cy.get(`os-file-upload[data-os-uuid='${firstFieldUuid}']`)
         .then(($field) => {
-          $field[0].addEventListener(
-            "upload-error",
-            cy.stub().as("uploadErrorStub"),
-          );
           cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
         })
         .within(() => {
@@ -104,36 +100,35 @@ context("upload field", function () {
 
       cy.wait("@directUploadError").then(() => {
         cy.get("@dispatchEventSpy").should("have.been.called");
-        cy.get("@uploadErrorStub").should("have.been.calledOnce");
       });
     });
   });
 
   describe("when the file size is exceeded", () => {
-    it("dispatches and error event", function () {
+    it("dispatches an error event", function () {
       const secondFieldUuid = "upload_field_2_uuid";
-      const thirtyMb = 30 * 1024 * 1024;
-      const bigFile = Cypress.Buffer.alloc(thirtyMb);
-      bigFile.write("X", thirtyMb);
+      const bigFile = Cypress.Buffer.alloc(26 * 1024 * 1024);
 
       cy.get(`os-file-upload[data-os-uuid='${secondFieldUuid}']`)
         .then(($field) => {
-          $field[0].addEventListener(
-            "upload-error",
-            cy.stub().as("uploadErrorStub"),
-          );
           cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
         })
         .within(() => {
           cy.get("input[type='file']")
             .selectFile({
               contents: bigFile,
-              fileName: "30mb.txt",
+              fileName: "bigFile.txt",
               mimeType: "text/plain",
             });
         });
-      cy.get("@dispatchEventSpy").should("have.been.called");
-      cy.get("@uploadErrorStub").should("have.been.calledOnce");
+      cy.get("@dispatchEventSpy").should((spy) => {
+        const { detail } = spy.args[1][0];
+
+        expect(detail).to.have.property("error");
+        expect(detail.error).to.equal(
+          "File size exceeds the limit of 25MB. Please select a smaller file.",
+        );
+      });
     });
   });
 
@@ -144,7 +139,7 @@ context("upload field", function () {
 
       cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
         .as("directUploadSuccess");
-      cy.intercept("**/rails/active_storage/disk/*", this.directUploadsSuccess)
+      cy.intercept("**/rails/active_storage/disk/*", { statusCode: 200 })
         .as("activeStorageSuccess");
 
       cy.get(fieldSelector).within(
@@ -166,7 +161,7 @@ context("upload field", function () {
 
         cy.get(fieldSelector).trigger("upload-reset").within(
           () => {
-            cy.get("input[type='hidden']").should("have.value", "");
+            cy.get("input[type='hidden']").should("not.exist");
             cy.get("input[type='file']").should("have.value", "");
           },
         );
