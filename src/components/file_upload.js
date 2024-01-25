@@ -20,6 +20,7 @@ export class OSFileUpload extends HTMLElement {
     this.appendChild(fileInput);
 
     const handleUpload = (error, blob) => {
+      this.dispatchLoadingEvent(false);
       this.uploadCounter++;
       const signedId = blob?.signed_id;
 
@@ -67,6 +68,8 @@ export class OSFileUpload extends HTMLElement {
         this.dispatchErrorEvent(text);
         uploadReset();
       } else {
+        this.dispatchLoadingEvent(true);
+
         files.forEach((file) => {
           const requestHost = host || "https://app.formli.com";
           const uploader = new Uploader(
@@ -96,6 +99,12 @@ export class OSFileUpload extends HTMLElement {
   dispatchChangeEvent(value) {
     this.dispatchEvent(
       new CustomEvent("upload-change", { detail: { value } }),
+    );
+  }
+
+  dispatchLoadingEvent(value) {
+    this.dispatchEvent(
+      new CustomEvent("upload-loading", { detail: { value } }),
     );
   }
 
