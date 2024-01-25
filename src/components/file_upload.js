@@ -20,11 +20,11 @@ export class OSFileUpload extends HTMLElement {
     this.appendChild(fileInput);
 
     const handleUpload = (error, blob) => {
-      this.dispatchLoadingEvent(false);
       this.uploadCounter++;
       const signedId = blob?.signed_id;
 
       if (error) {
+        this.dispatchLoadingEvent(false);
         this.dispatchErrorEvent(error);
         uploadReset();
       } else {
@@ -39,6 +39,7 @@ export class OSFileUpload extends HTMLElement {
           u.file.name !== blob.filename
         );
         if (this.uploadCounter === this.totalFiles) {
+          this.dispatchLoadingEvent(false);
           this.dispatchSuccessEvent(this.completedUploadIds);
           this.uploadCounter = 0;
         }
