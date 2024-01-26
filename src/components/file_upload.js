@@ -24,6 +24,7 @@ export class OSFileUpload extends HTMLElement {
       const signedId = blob?.signed_id;
 
       if (error) {
+        this.dispatchLoadingEvent(false);
         this.dispatchErrorEvent(error);
         uploadReset();
       } else {
@@ -38,6 +39,7 @@ export class OSFileUpload extends HTMLElement {
           u.file.name !== blob.filename
         );
         if (this.uploadCounter === this.totalFiles) {
+          this.dispatchLoadingEvent(false);
           this.dispatchSuccessEvent(this.completedUploadIds);
           this.uploadCounter = 0;
         }
@@ -67,6 +69,8 @@ export class OSFileUpload extends HTMLElement {
         this.dispatchErrorEvent(text);
         uploadReset();
       } else {
+        this.dispatchLoadingEvent(true);
+
         files.forEach((file) => {
           const requestHost = host || "https://app.formli.com";
           const uploader = new Uploader(
@@ -96,6 +100,12 @@ export class OSFileUpload extends HTMLElement {
   dispatchChangeEvent(value) {
     this.dispatchEvent(
       new CustomEvent("upload-change", { detail: { value } }),
+    );
+  }
+
+  dispatchLoadingEvent(value) {
+    this.dispatchEvent(
+      new CustomEvent("upload-loading", { detail: { value } }),
     );
   }
 

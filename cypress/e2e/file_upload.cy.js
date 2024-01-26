@@ -80,6 +80,58 @@ context("upload field", function () {
         );
       });
     });
+
+    it("dispatches the loading event with 'false' value", function () {
+      const firstFieldUuid = "upload_field_1_uuid";
+
+      cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
+        .as("directUploadSuccess");
+      cy.intercept("**/rails/active_storage/disk/*", { statusCode: 200 })
+        .as("activeStorageSuccess");
+
+      cy.get(`os-file-upload[data-os-uuid='${firstFieldUuid}']`)
+        .then(($field) => {
+          cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
+        })
+        .within(() => {
+          cy.get("input[type='file']")
+            .selectFile("cypress/fixtures/upload_test.txt");
+        });
+
+      cy.wait(["@directUploadSuccess", "@activeStorageSuccess"]).then(() => {
+        cy.get("@dispatchEventSpy").should((spy) => {
+          const { detail } = spy.args[2][0];
+
+          expect(detail.value).to.equal(false);
+        });
+      });
+    });
+  });
+
+  describe("when uploading", () => {
+    it("dispatches the loading event with 'true' value", function () {
+      const firstFieldUuid = "upload_field_1_uuid";
+
+      cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
+        .as("directUploadSuccess");
+      cy.intercept("**/rails/active_storage/disk/*", { statusCode: 200 })
+        .as("activeStorageSuccess");
+
+      cy.get(`os-file-upload[data-os-uuid='${firstFieldUuid}']`)
+        .then(($field) => {
+          cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
+        })
+        .within(() => {
+          cy.get("input[type='file']")
+            .selectFile("cypress/fixtures/upload_test.txt");
+        });
+
+      cy.get("@dispatchEventSpy").should((spy) => {
+        const { detail } = spy.args[1][0];
+
+        expect(detail.value).to.equal(true);
+      });
+    });
   });
 
   describe("when upload is failed", () => {
@@ -100,6 +152,31 @@ context("upload field", function () {
 
       cy.wait("@directUploadError").then(() => {
         cy.get("@dispatchEventSpy").should("have.been.called");
+      });
+    });
+
+    it("dispatches the loading event with 'false' value", function () {
+      const firstFieldUuid = "upload_field_1_uuid";
+
+      cy.intercept("POST", "**/direct_uploads*", { statusCode: 400 }).as(
+        "directUploadError",
+      );
+
+      cy.get(`os-file-upload[data-os-uuid='${firstFieldUuid}']`)
+        .then(($field) => {
+          cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
+        })
+        .within(() => {
+          cy.get("input[type='file']")
+            .selectFile("cypress/fixtures/upload_test.txt");
+        });
+
+      cy.wait("@directUploadError").then(() => {
+        cy.get("@dispatchEventSpy").should((spy) => {
+          const { detail } = spy.args[2][0];
+
+          expect(detail.value).to.equal(false);
+        });
       });
     });
   });
