@@ -38,3 +38,5 @@ blocks:
 promotions:
   - name: S3 deploy
     pipeline_file: s3-deploy.yml
+    auto_promote:
+      when: "result = 'passed' and branch = 'main'"
