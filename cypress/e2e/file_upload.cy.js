@@ -1,3 +1,5 @@
+import { ALLOWED_FILE_TYPES } from "../../src/utils/constants";
+
 context("upload field", function () {
   beforeEach(() => {
     cy.fixture("direct_uploads_response.json").as("directUploadsSuccess");
@@ -242,6 +244,38 @@ context("upload field", function () {
             cy.get("input[type='file']").should("have.value", "");
           },
         );
+      });
+    });
+  });
+
+  describe("'accept' attribute", () => {
+    describe("when present", () => {
+      it("sets attribute to the file input with passed value", function () {
+        const firstFieldUuid = "upload_field_1_uuid";
+        const fieldSelector =
+          `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
+        cy.get(fieldSelector).within(() => {
+          cy.get("input[type='file']").should(
+            "have.attr",
+            "accept",
+            "image/jpeg, video/*",
+          );
+        });
+      });
+    });
+
+    describe("when not present", () => {
+      it("sets attribute to the file input with default value", function () {
+        const firstFieldUuid = "upload_field_2_uuid";
+        const fieldSelector =
+          `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
+        cy.get(fieldSelector).within(() => {
+          cy.get("input[type='file']").should(
+            "have.attr",
+            "accept",
+            ALLOWED_FILE_TYPES,
+          );
+        });
       });
     });
   });
