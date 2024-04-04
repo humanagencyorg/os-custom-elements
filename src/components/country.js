@@ -40,6 +40,9 @@ export class OSCountry extends HTMLElement {
         })
         .catch((error) => {
           console.error(error);
+          this.dispatchEvent(
+            new CustomEvent("country-error", { detail: { error }}),
+          );
         });
     } else {
       console.warn("data-os-uuid was not found for <os-county> element");
