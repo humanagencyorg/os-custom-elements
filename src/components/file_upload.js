@@ -27,7 +27,7 @@ export class OSFileUpload extends HTMLElement {
 
       if (error) {
         this.dispatchLoadingEvent(false);
-        this.dispatchErrorEvent(error);
+        this.dispatchErrorEvent({ error, notifyHoneybadger: true });
         uploadReset();
       } else {
         const signedIdInput = document.createElement("input");
@@ -62,13 +62,13 @@ export class OSFileUpload extends HTMLElement {
       if (this.filesExceedLimit(files, filesLimit)) {
         const text = `Limit of ${filesLimit} files`;
 
-        this.dispatchErrorEvent(text);
+        this.dispatchErrorEvent({ error: text });
         uploadReset();
       } else if (this.fileExceedsMaxSize(files)) {
         const text =
           "File size exceeds the limit of 25MB. Please select a smaller file.";
 
-        this.dispatchErrorEvent(text);
+        this.dispatchErrorEvent({ error: text });
         uploadReset();
       } else {
         this.dispatchLoadingEvent(true);
@@ -111,9 +111,9 @@ export class OSFileUpload extends HTMLElement {
     );
   }
 
-  dispatchErrorEvent(text) {
+  dispatchErrorEvent(detail) {
     this.dispatchEvent(
-      new CustomEvent("upload-error", { detail: { error: text } }),
+      new CustomEvent("upload-error", { detail }),
     );
   }
 
