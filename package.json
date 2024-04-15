@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@rails/activestorage": "^7.1.2",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "signature_pad": "^4.2.0"
   }
 }
