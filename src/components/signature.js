@@ -144,8 +144,7 @@ export class OSSignature extends HTMLElement {
       if (signaturePad.isEmpty()) {
         hiddenInput.value = "";
       } else {
-        const dataUrl = signaturePad.toDataURL();
-        hiddenInput.value = dataUrl;
+        hiddenInput.value = svg;
       }
 
       close();
