@@ -87,24 +87,28 @@ export class OSSignature extends HTMLElement {
     const canvas = document.createElement("canvas");
     const clearButton = document.createElement("button");
     const saveButton = document.createElement("button");
+    const hiddenInput = document.createElement("input");
+
+    hiddenInput.type = "hidden";
 
     padWrapper.classList.add("signature-pad");
-    padWrapper.style.visibility = "hidden";
-    padWrapper.style.zIndex = -1;
     padBody.classList.add("signature-pad-body");
     padFooter.classList.add("signature-pad-footer");
     clearButton.classList.add("signature-pad-clear-button");
     saveButton.classList.add("signature-pad-save-button");
 
+    padWrapper.style.visibility = "hidden";
+    padWrapper.style.zIndex = -1;
+
+    clearButton.textContent = "Clear";
+    saveButton.textContent = "Save";
+
     padWrapper.appendChild(padBody);
     padWrapper.appendChild(padFooter);
     padBody.appendChild(canvas);
-    clearButton.textContent = "Clear";
-    saveButton.textContent = "Save";
     padFooter.appendChild(clearButton);
     padFooter.appendChild(saveButton);
-
-    this.appendChild(frameEl);
+    this.appendChild(hiddenInput);
     this.appendChild(padWrapper);
 
     const signaturePad = new SignaturePad(canvas, {
@@ -136,6 +140,14 @@ export class OSSignature extends HTMLElement {
     saveButton.addEventListener("click", () => {
       const svg = signaturePad.toSVG();
       frameEl.innerHTML = svg;
+
+      if (signaturePad.isEmpty()) {
+        hiddenInput.value = "";
+      } else {
+        const dataUrl = signaturePad.toDataURL();
+        hiddenInput.value = dataUrl;
+      }
+
       close();
     });
 
