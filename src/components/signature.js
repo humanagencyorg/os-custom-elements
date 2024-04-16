@@ -23,12 +23,13 @@ export class OSSignature extends HTMLElement {
           left: 50%;
           right: 50%;
           transform: translate(-50%, -50%);
+          box-sizing: border-box;
           box-shadow:
             0 1px 4px rgba(0, 0, 0, 0.27),
             inset 0 0 40px rgba(0, 0, 0, 0.08);
         }
 
-        .signature-trigger {
+        .signature-frame {
           height: 60px;
           width: 150px;
           border: 1px solid #ccc;
@@ -76,9 +77,9 @@ export class OSSignature extends HTMLElement {
       OSSignature.defaultStylesAdded = true;
     }
 
-    const triggerEl = document.createElement("div");
-    triggerEl.classList.add("signature-trigger");
-    this.appendChild(triggerEl);
+    const frameEl = document.createElement("div");
+    frameEl.classList.add("signature-frame");
+    this.appendChild(frameEl);
 
     const padWrapper = document.createElement("div");
     const padBody = document.createElement("div");
@@ -103,7 +104,7 @@ export class OSSignature extends HTMLElement {
     padFooter.appendChild(clearButton);
     padFooter.appendChild(saveButton);
 
-    this.appendChild(triggerEl);
+    this.appendChild(frameEl);
     this.appendChild(padWrapper);
 
     const signaturePad = new SignaturePad(canvas, {
@@ -126,7 +127,6 @@ export class OSSignature extends HTMLElement {
     }
 
     function close() {
-      clear();
       padWrapper.style.zIndex = -1;
       padWrapper.style.visibility = "hidden";
     }
@@ -135,11 +135,11 @@ export class OSSignature extends HTMLElement {
 
     saveButton.addEventListener("click", () => {
       const svg = signaturePad.toSVG();
-      triggerEl.innerHTML = svg;
+      frameEl.innerHTML = svg;
       close();
     });
 
-    triggerEl.addEventListener("click", () => {
+    frameEl.addEventListener("click", () => {
       padWrapper.style.zIndex = 100;
       padWrapper.style.visibility = "visible";
     });
