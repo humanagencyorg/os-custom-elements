@@ -138,14 +138,12 @@ export class OSSignature extends HTMLElement {
     clearButton.addEventListener("click", clear);
 
     saveButton.addEventListener("click", () => {
+      const padIsEmpty = signaturePad.isEmpty();
       const svg = signaturePad.toSVG();
-      frameEl.innerHTML = svg;
+      const value = padIsEmpty ? "" : svg;
 
-      if (signaturePad.isEmpty()) {
-        hiddenInput.value = "";
-      } else {
-        hiddenInput.value = svg;
-      }
+      hiddenInput.value = value;
+      frameEl.innerHTML = value;
 
       close();
     });
