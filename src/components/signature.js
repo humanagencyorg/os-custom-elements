@@ -1,4 +1,6 @@
 import SignaturePad from "signature_pad";
+import { Uploader } from "../utils/uploader";
+import { host, workspaceId } from "../utils/script_attributes";
 
 export class OSSignature extends HTMLElement {
   static defaultStylesAdded = false;
@@ -90,6 +92,8 @@ export class OSSignature extends HTMLElement {
     const hiddenInput = document.createElement("input");
 
     hiddenInput.type = "hidden";
+    saveButton.type = "button";
+    clearButton.type = "button";
 
     padWrapper.classList.add("signature-pad");
     padBody.classList.add("signature-pad-body");
@@ -135,14 +139,38 @@ export class OSSignature extends HTMLElement {
       padWrapper.style.visibility = "hidden";
     }
 
+    function handleUpload(error, blob) {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log("Upload successful", blob);
+      }
+    }
+
     clearButton.addEventListener("click", clear);
 
     saveButton.addEventListener("click", () => {
       const padIsEmpty = signaturePad.isEmpty();
       const svg = signaturePad.toSVG();
       const value = padIsEmpty ? "" : svg;
+      const requestHost = host || "https://app.formli.com";
 
-      hiddenInput.value = value;
+      canvas.toBlob((blob) => {
+        const timestamp = new Date().getTime();
+        const file = new File([blob], `signature_${timestamp}.svg`, {
+          type: "image/svg+xml",
+        });
+
+        const uploader = new Uploader(
+          file,
+          `${requestHost}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
+          () => { },
+          handleUpload,
+        );
+
+        uploader.start();
+      }, "image/svg+xml");
+
       frameEl.innerHTML = value;
 
       close();
