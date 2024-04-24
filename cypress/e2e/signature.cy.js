@@ -36,6 +36,7 @@ context("signature field", function() {
 
   describe("signature pad", () => {
     beforeEach(() => {
+      cy.fixture("direct_uploads_response.json").as("directUploadsSuccess");
       cy.visit("/");
       cy.get(".signature-frame").click();
       cy.get(".signature-pad").should("be.visible");
@@ -64,16 +65,25 @@ context("signature field", function() {
         cy.get(".signature-pad").should("not.be.visible");
       });
 
-      it("sets svg image to the hidden input value", function() {
-        cy.get("input[type=hidden]").should("not.have.value");
-        cy.get("button").contains("Save").click();
-        cy.get("input[type=hidden]").invoke("val").should("include", "<svg");
-      });
+      it("sets signed_id to the hidden input value", function() {
+        cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
+          .as("directUploadSuccess");
+        cy.intercept("**/rails/active_storage/disk/*", { statusCode: 200 })
+          .as("activeStorageSuccess");
 
-      it("sets svg image to the hidden input value", function() {
         cy.get("input[type=hidden]").should("not.have.value");
         cy.get("button").contains("Save").click();
-        cy.get("input[type=hidden]").invoke("val").should("include", "<svg");
+
+        cy.wait(["@directUploadSuccess", "@activeStorageSuccess"]).then(() => {
+          cy.get("os-signature").within(
+            () => {
+              cy.get("input[type='hidden']").should(
+                "have.value",
+                "signed_id_value",
+              );
+            },
+          );
+        });
       });
 
       it("sets svg image to the frame element", function() {
@@ -84,8 +94,22 @@ context("signature field", function() {
 
       describe("when canvas is empty", () => {
         it("sets empty value to the hidden input", function() {
+          cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
+            .as("directUploadSuccess");
+          cy.intercept("**/rails/active_storage/disk/*", { statusCode: 200 })
+            .as("activeStorageSuccess");
+
           cy.get("button").contains("Save").click();
-          cy.get("input[type=hidden]").invoke("val").should("include", "<svg");
+          cy.wait(["@directUploadSuccess", "@activeStorageSuccess"]).then(() => {
+            cy.get("os-signature").within(
+              () => {
+                cy.get("input[type='hidden']").should(
+                  "have.value",
+                  "signed_id_value",
+                );
+              },
+            );
+          });
           cy.get(".signature-frame").click();
           cy.get("button").contains("Clear").click();
           cy.get("button").contains("Save").click();

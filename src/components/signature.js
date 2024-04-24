@@ -143,7 +143,8 @@ export class OSSignature extends HTMLElement {
       if (error) {
         console.error(error);
       } else {
-        console.log("Upload successful", blob);
+        const signedId = blob?.signed_id;
+        hiddenInput.value = signedId;
       }
     }
 
