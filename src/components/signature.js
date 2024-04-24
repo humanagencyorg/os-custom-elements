@@ -130,56 +130,74 @@ export class OSSignature extends HTMLElement {
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
 
-    function clear() {
+    function clearPad() {
       signaturePad.clear();
     }
 
-    function close() {
+    function closePad() {
       padWrapper.style.zIndex = -1;
       padWrapper.style.visibility = "hidden";
     }
 
-    function handleUpload(error, blob) {
+    const handleUpload = (error, blob, svg) => {
       if (error) {
         console.error(error);
+        this.dispatchErrorEvent({ error });
       } else {
         const signedId = blob?.signed_id;
         hiddenInput.value = signedId;
+        frameEl.innerHTML = svg;
       }
-    }
+      this.dispatchLoadingEvent(false);
+    };
 
-    clearButton.addEventListener("click", clear);
+    clearButton.addEventListener("click", clearPad);
 
     saveButton.addEventListener("click", () => {
       const padIsEmpty = signaturePad.isEmpty();
       const svg = signaturePad.toSVG();
-      const value = padIsEmpty ? "" : svg;
       const requestHost = host || "https://app.formli.com";
 
-      canvas.toBlob((blob) => {
-        const timestamp = new Date().getTime();
-        const file = new File([blob], `signature_${timestamp}.svg`, {
-          type: "image/svg+xml",
-        });
+      if (padIsEmpty) {
+        hiddenInput.value = "";
+        frameEl.innerHTML = "";
+      } else {
+        canvas.toBlob((blob) => {
+          const timestamp = new Date().getTime();
+          const file = new File([blob], `signature_${timestamp}.svg`, {
+            type: "image/svg+xml",
+          });
 
-        const uploader = new Uploader(
-          file,
-          `${requestHost}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
-          () => { },
-          handleUpload,
-        );
+          this.dispatchLoadingEvent(true);
+          const uploader = new Uploader(
+            file,
+            `${requestHost}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
+            () => { },
+            (error, blob) => handleUpload(error, blob, svg),
+          );
 
-        uploader.start();
-      }, "image/svg+xml");
+          uploader.start();
+        }, "image/svg+xml");
+      }
 
-      frameEl.innerHTML = value;
-
-      close();
+      closePad();
     });
 
     frameEl.addEventListener("click", () => {
       padWrapper.style.zIndex = 100;
       padWrapper.style.visibility = "visible";
     });
+  }
+
+  dispatchErrorEvent(detail) {
+    this.dispatchEvent(
+      new CustomEvent("signature-error", { detail }),
+    );
+  }
+
+  dispatchLoadingEvent(value) {
+    this.dispatchEvent(
+      new CustomEvent("signature-loading", { detail: { value } }),
+    );
   }
 }
