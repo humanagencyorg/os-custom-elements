@@ -59,7 +59,7 @@ context("signature field", function() {
         cy.get("canvas").trigger("pointerup", { which: 1, force: true });
       });
 
-      it("closes signature pad", async () => {
+      it("closes signature pad", function() {
         cy.get(".signature-pad").should("be.visible");
         cy.get("button").contains("Save").click();
         cy.get(".signature-pad").should("not.be.visible");
@@ -157,7 +157,7 @@ context("signature field", function() {
           cy.get(".signature-frame").invoke("html").should("include", "<svg");
         });
 
-        it("dispatches the loading event with 'true' value", function() {
+        it("dispatches the loading event with 'false' value", function() {
           cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
             .as("directUploadSuccess");
           cy.intercept("**/rails/active_storage/disk/*", { statusCode: 200 })
@@ -170,9 +170,29 @@ context("signature field", function() {
 
           cy.get("button").contains("Save").click();
           cy.get("@dispatchEventSpy").should((spy) => {
-            const { detail } = spy.args[0][0];
+            const { detail } = spy.args[2][0];
 
-            expect(detail.value).to.equal(true);
+            expect(detail.value).to.equal(false);
+          });
+        });
+
+        it("dispatches the success event with signed_id value", function() {
+          cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
+            .as("directUploadSuccess");
+          cy.intercept("**/rails/active_storage/disk/*", { statusCode: 200 })
+            .as("activeStorageSuccess");
+
+          cy.get("os-signature")
+            .then(($field) => {
+              cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
+            });
+
+          cy.get("button").contains("Save").click();
+          cy.get("@dispatchEventSpy").should((spy) => {
+            const { detail, type } = spy.args[1][0];
+
+            expect(type).to.equal("upload-success");
+            expect(detail.signedId).to.equal("signed_id_value");
           });
         });
       });

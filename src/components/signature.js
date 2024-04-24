@@ -142,11 +142,12 @@ export class OSSignature extends HTMLElement {
     const handleUpload = (error, blob, svg) => {
       if (error) {
         console.error(error);
-        this.dispatchErrorEvent({ error });
+        this.dispatchErrorEvent(error);
       } else {
         const signedId = blob?.signed_id;
         hiddenInput.value = signedId;
         frameEl.innerHTML = svg;
+        this.dispatchSuccessEvent(signedId);
       }
       this.dispatchLoadingEvent(false);
     };
@@ -189,15 +190,21 @@ export class OSSignature extends HTMLElement {
     });
   }
 
-  dispatchErrorEvent(detail) {
+  dispatchErrorEvent(error) {
     this.dispatchEvent(
-      new CustomEvent("signature-error", { detail }),
+      new CustomEvent("signature-error", { detail: { error } }),
     );
   }
 
   dispatchLoadingEvent(value) {
     this.dispatchEvent(
       new CustomEvent("signature-loading", { detail: { value } }),
+    );
+  }
+
+  dispatchSuccessEvent(signedId) {
+    this.dispatchEvent(
+      new CustomEvent("upload-success", { detail: { signedId } }),
     );
   }
 }
