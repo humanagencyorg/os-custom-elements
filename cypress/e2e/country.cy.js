@@ -1,9 +1,9 @@
-context("country field", function () {
+context("country field", function() {
   beforeEach(() => {
     cy.fixture("countries_response.json").as("countriesResponse");
   });
 
-  it("passes workspace id from the script src to the request headers", function () {
+  it("passes workspace id from the script src to the request headers", function() {
     cy.intercept(
       "GET",
       "**/api/v1/data_fields/country_field_uuid/countries",
@@ -41,7 +41,7 @@ context("country field", function () {
       });
     });
 
-    it("warns user in console", function () {
+    it("warns user in console", function() {
       cy.visit("/with-invalid-field", {
         onBeforeLoad(win) {
           cy.stub(win.console, "warn").as("consoleWarn");
@@ -54,7 +54,7 @@ context("country field", function () {
       );
     });
 
-    it("does not make API request with null uuid", function () {
+    it("does not make API request with null uuid", function() {
       cy.intercept("GET", "**/api/v1/data_fields/**/countries").as(
         "countriesRequest",
       );
@@ -67,7 +67,7 @@ context("country field", function () {
   });
 
   describe("when countries request succeeded", () => {
-    it("populates select options", function () {
+    it("populates select options", function() {
       cy.intercept(
         "GET",
         "**/api/v1/data_fields/country_field_uuid/countries",
@@ -83,7 +83,7 @@ context("country field", function () {
       });
     });
 
-    it("sets default value from the attribute", function () {
+    it("sets default value from the attribute", function() {
       cy.intercept(
         "GET",
         "**/api/v1/data_fields/country_field_uuid/countries",
@@ -97,7 +97,7 @@ context("country field", function () {
       });
     });
 
-    it("sets custom tag value on country select", function () {
+    it("sets custom tag value on country select", function() {
       cy.intercept(
         "GET",
         "**/api/v1/data_fields/country_field_uuid/countries",
@@ -110,6 +110,30 @@ context("country field", function () {
         cy.get("select").select("CA");
 
         cy.get("os-country").should("have.attr", "value", "CA");
+      });
+    });
+  });
+
+  describe("when countries request does not succeeded", () => {
+    it("dispatches an error event", function() {
+      cy.intercept(
+        "GET",
+        "**/api/v1/data_fields/country_field_uuid/countries",
+        { forceNetworkError: true },
+      ).as(
+        "countriesError",
+      );
+      cy.visit("/");
+
+      cy.get("os-country")
+        .then(($field) => {
+          cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
+        });
+      cy.wait("@countriesError").then(() => {
+        cy.get("@dispatchEventSpy").should((spy) => {
+          const { detail } = spy.args[0][0];
+          expect(detail.error.message).to.equal("Failed to fetch");
+        });
       });
     });
   });

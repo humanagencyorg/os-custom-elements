@@ -1,12 +1,12 @@
 import { ALLOWED_FILE_TYPES } from "../../src/utils/constants";
 
-context("upload field", function () {
+context("upload field", function() {
   beforeEach(() => {
     cy.fixture("direct_uploads_response.json").as("directUploadsSuccess");
     cy.visit("/");
   });
 
-  it("passes workspace-id from the script src to the Uploader request query", function () {
+  it("passes workspace-id from the script src to the Uploader request query", function() {
     const firstFieldUuid = "upload_field_1_uuid";
 
     cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
@@ -28,7 +28,7 @@ context("upload field", function () {
   });
 
   describe("when upload succeeded", () => {
-    it("dispatches the success event", function () {
+    it("dispatches the success event", function() {
       const firstFieldUuid = "upload_field_1_uuid";
 
       cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
@@ -55,7 +55,7 @@ context("upload field", function () {
       });
     });
 
-    it("sets signed_id value to the hidden input", function () {
+    it("sets signed_id value to the hidden input", function() {
       const firstFieldUuid = "upload_field_1_uuid";
       const fieldSelector = `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
 
@@ -83,7 +83,7 @@ context("upload field", function () {
       });
     });
 
-    it("dispatches the loading event with 'false' value", function () {
+    it("dispatches the loading event with 'false' value", function() {
       const firstFieldUuid = "upload_field_1_uuid";
 
       cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
@@ -111,7 +111,7 @@ context("upload field", function () {
   });
 
   describe("when uploading", () => {
-    it("dispatches the loading event with 'true' value", function () {
+    it("dispatches the loading event with 'true' value", function() {
       const firstFieldUuid = "upload_field_1_uuid";
 
       cy.intercept("POST", "**/direct_uploads*", this.directUploadsSuccess)
@@ -137,7 +137,7 @@ context("upload field", function () {
   });
 
   describe("when upload is failed", () => {
-    it("dispatches an error event", function () {
+    it("dispatches an error event", function() {
       const firstFieldUuid = "upload_field_1_uuid";
 
       cy.intercept("POST", "**/direct_uploads*", { statusCode: 400 }).as(
@@ -153,11 +153,16 @@ context("upload field", function () {
         });
 
       cy.wait("@directUploadError").then(() => {
-        cy.get("@dispatchEventSpy").should("have.been.called");
+        cy.get("@dispatchEventSpy").should((spy) => {
+          const { detail } = spy.args[3][0];
+
+          expect(detail.error).to.equal('Error creating Blob for "upload_test.txt". Status: 400');
+          expect(detail.notifyHoneybadger).to.equal(true);
+        });
       });
     });
 
-    it("dispatches the loading event with 'false' value", function () {
+    it("dispatches the loading event with 'false' value", function() {
       const firstFieldUuid = "upload_field_1_uuid";
 
       cy.intercept("POST", "**/direct_uploads*", { statusCode: 400 }).as(
@@ -184,7 +189,7 @@ context("upload field", function () {
   });
 
   describe("when the file size is exceeded", () => {
-    it("dispatches an error event", function () {
+    it("dispatches an error event", function() {
       const secondFieldUuid = "upload_field_2_uuid";
       const bigFile = Cypress.Buffer.alloc(26 * 1024 * 1024);
 
@@ -212,7 +217,7 @@ context("upload field", function () {
   });
 
   describe("when upload-reset event received", () => {
-    it("resets the inputs", function () {
+    it("resets the inputs", function() {
       const firstFieldUuid = "upload_field_1_uuid";
       const fieldSelector = `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
 
@@ -250,7 +255,7 @@ context("upload field", function () {
 
   describe("'accept' attribute", () => {
     describe("when present", () => {
-      it("sets attribute to the file input with passed value", function () {
+      it("sets attribute to the file input with passed value", function() {
         const firstFieldUuid = "upload_field_1_uuid";
         const fieldSelector =
           `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
@@ -265,7 +270,7 @@ context("upload field", function () {
     });
 
     describe("when not present", () => {
-      it("sets attribute to the file input with default value", function () {
+      it("sets attribute to the file input with default value", function() {
         const firstFieldUuid = "upload_field_2_uuid";
         const fieldSelector =
           `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
