@@ -163,22 +163,20 @@ export class OSSignature extends HTMLElement {
         hiddenInput.value = "";
         frameEl.innerHTML = "";
       } else {
-        canvas.toBlob((blob) => {
-          const timestamp = new Date().getTime();
-          const file = new File([blob], `signature_${timestamp}.svg`, {
-            type: "image/svg+xml",
-          });
+        const timestamp = new Date().getTime();
+        const file = new File([svg], `signature_${timestamp}.svg`, {
+          type: "image/svg+xml",
+        });
 
-          this.dispatchLoadingEvent(true);
-          const uploader = new Uploader(
-            file,
-            `${requestHost}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
-            () => { },
-            (error, blob) => handleUpload(error, blob, svg),
-          );
+        this.dispatchLoadingEvent(true);
+        const uploader = new Uploader(
+          file,
+          `${requestHost}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
+          () => { },
+          (error, blob) => handleUpload(error, blob, svg),
+        );
 
-          uploader.start();
-        }, "image/svg+xml");
+        uploader.start();
       }
 
       closePad();
