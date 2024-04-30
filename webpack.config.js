@@ -38,7 +38,6 @@ module.exports = (_env, argv) => {
             if (match) {
               componentName = match[1];
               sourceFile = filename;
-              break;
             }
 
             if (sourceFile) {
