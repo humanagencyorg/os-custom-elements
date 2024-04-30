@@ -33,7 +33,7 @@ module.exports = (_env, argv) => {
             let sourceFile;
             let componentName;
 
-            const regex = /os-(.*?)\..*.js/;
+            const regex = /os-(.*?)\..*.min.js/;
             const match = filename.match(regex);
             if (match) {
               componentName = match[1];
