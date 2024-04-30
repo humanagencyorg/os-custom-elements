@@ -29,10 +29,10 @@ module.exports = (_env, argv) => {
       apply: (compiler) => {
         compiler.hooks.afterEmit.tap("AfterEmitPlugin", (compilation) => {
           const assets = compilation.assets;
-          let sourceFile;
-          let componentName;
-
           for (const filename in assets) {
+            let sourceFile;
+            let componentName;
+
             const regex = /os-(.*?)\..*.js/;
             const match = filename.match(regex);
             if (match) {
@@ -40,20 +40,20 @@ module.exports = (_env, argv) => {
               sourceFile = filename;
               break;
             }
-          }
 
-          if (sourceFile) {
-            const sourcePath = path.resolve(__dirname, "dist", sourceFile);
-            const destPath = path.resolve(
-              __dirname,
-              "dist",
-              `os-${componentName}-${VERSION}.min.js`,
-            );
+            if (sourceFile) {
+              const sourcePath = path.resolve(__dirname, "dist", sourceFile);
+              const destPath = path.resolve(
+                __dirname,
+                "dist",
+                `os-${componentName}-${VERSION}.min.js`,
+              );
 
-            fs.copyFile(sourcePath, destPath, (err) => {
-              if (err) throw err;
-              console.log(`${sourceFile} was copied to ${destPath}`);
-            });
+              fs.copyFile(sourcePath, destPath, (err) => {
+                if (err) throw err;
+                console.log(`${sourceFile} was copied to ${destPath}`);
+              });
+            }
           }
         });
       },
