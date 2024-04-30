@@ -60,9 +60,13 @@ module.exports = (_env, argv) => {
   }
 
   return {
-    entry: "./src/app.js",
+    entry: {
+      'custom-elements': "./src/app.js",
+      'country': "./src/components/country.js",
+      'file-upload': "./src/components/file_upload.js",
+    },
     output: {
-      filename: "os-custom-elements.[contenthash].min.js",
+      filename: "os-[name].[contenthash].min.js",
       path: path.resolve(__dirname, "dist"),
     },
     devServer: {
