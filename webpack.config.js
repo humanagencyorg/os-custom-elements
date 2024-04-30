@@ -30,12 +30,13 @@ module.exports = (_env, argv) => {
         compiler.hooks.afterEmit.tap("AfterEmitPlugin", (compilation) => {
           const assets = compilation.assets;
           let sourceFile;
+          let componentName;
 
           for (const filename in assets) {
-            if (
-              filename.startsWith("os-custom-elements") &&
-              filename.endsWith(".js")
-            ) {
+            const regex = /os-(.*?)\..*.js/;
+            const match = filename.match(regex);
+            if (match) {
+              componentName = match[1];
               sourceFile = filename;
               break;
             }
@@ -46,7 +47,7 @@ module.exports = (_env, argv) => {
             const destPath = path.resolve(
               __dirname,
               "dist",
-              `os-custom-elements-${VERSION}.min.js`,
+              `os-${componentName}-${VERSION}.min.js`,
             );
 
             fs.copyFile(sourcePath, destPath, (err) => {
@@ -61,9 +62,9 @@ module.exports = (_env, argv) => {
 
   return {
     entry: {
-      'custom-elements': "./src/app.js",
-      'country': "./src/components/country.js",
-      'file-upload': "./src/components/file_upload.js",
+      "custom-elements": "./src/app.js",
+      "country": "./src/components/country.js",
+      "file-upload": "./src/components/file_upload.js",
     },
     output: {
       filename: "os-[name].[contenthash].min.js",
