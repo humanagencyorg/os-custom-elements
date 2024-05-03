@@ -29,30 +29,30 @@ module.exports = (_env, argv) => {
       apply: (compiler) => {
         compiler.hooks.afterEmit.tap("AfterEmitPlugin", (compilation) => {
           const assets = compilation.assets;
-          let sourceFile;
-
           for (const filename in assets) {
-            if (
-              filename.startsWith("os-custom-elements") &&
-              filename.endsWith(".js")
-            ) {
+            let sourceFile;
+            let componentName;
+
+            const regex = /os-(.*?)\..*.min.js/;
+            const match = filename.match(regex);
+            if (match) {
+              componentName = match[1];
               sourceFile = filename;
-              break;
             }
-          }
 
-          if (sourceFile) {
-            const sourcePath = path.resolve(__dirname, "dist", sourceFile);
-            const destPath = path.resolve(
-              __dirname,
-              "dist",
-              `os-custom-elements-${VERSION}.min.js`,
-            );
+            if (sourceFile) {
+              const sourcePath = path.resolve(__dirname, "dist", sourceFile);
+              const destPath = path.resolve(
+                __dirname,
+                "dist",
+                `os-${componentName}-${VERSION}.min.js`,
+              );
 
-            fs.copyFile(sourcePath, destPath, (err) => {
-              if (err) throw err;
-              console.log(`${sourceFile} was copied to ${destPath}`);
-            });
+              fs.copyFile(sourcePath, destPath, (err) => {
+                if (err) throw err;
+                console.log(`${sourceFile} was copied to ${destPath}`);
+              });
+            }
           }
         });
       },
@@ -60,9 +60,13 @@ module.exports = (_env, argv) => {
   }
 
   return {
-    entry: "./src/app.js",
+    entry: {
+      "custom-elements": "./src/app.js",
+      "country": "./src/components/country.js",
+      "file-upload": "./src/components/file_upload.js",
+    },
     output: {
-      filename: "os-custom-elements.[contenthash].min.js",
+      filename: "os-[name].[contenthash].min.js",
       path: path.resolve(__dirname, "dist"),
     },
     devServer: {
