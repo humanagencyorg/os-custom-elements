@@ -284,4 +284,34 @@ context("upload field", function() {
       });
     });
   });
+
+  describe("'required' attribute", () => {
+    describe("when present", () => {
+      it("sets attribute to the file input", function() {
+        const firstFieldUuid = "upload_field_1_uuid";
+        const fieldSelector =
+          `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
+        cy.get(fieldSelector).within(() => {
+          cy.get("input[type='file']").should(
+            "have.attr",
+            "required"
+          );
+        });
+      });
+    });
+
+    describe("when not present", () => {
+      it("does not set required attribute to the file input", function() {
+        const firstFieldUuid = "upload_field_2_uuid";
+        const fieldSelector =
+          `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
+        cy.get(fieldSelector).within(() => {
+          cy.get("input[type='file']").should(
+            "not.have.attr",
+            "required"
+          );
+        });
+      });
+    });
+  });
 });

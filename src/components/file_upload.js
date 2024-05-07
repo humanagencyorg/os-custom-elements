@@ -14,11 +14,13 @@ export class OSFileUpload extends HTMLElement {
   connectedCallback() {
     const filesLimit = this.getAttribute("data-os-files-limit");
     const accept = this.getAttribute("accept");
+    const required = this.hasAttribute("required");
     const fileInput = document.createElement("input");
 
     fileInput.type = "file";
     fileInput.multiple = !!filesLimit;
     fileInput.accept = accept || ALLOWED_FILE_TYPES;
+    fileInput.required = required;
     this.appendChild(fileInput);
 
     const handleUpload = (error, blob) => {
