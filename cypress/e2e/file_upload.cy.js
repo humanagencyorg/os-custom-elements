@@ -156,7 +156,9 @@ context("upload field", function() {
         cy.get("@dispatchEventSpy").should((spy) => {
           const { detail } = spy.args[3][0];
 
-          expect(detail.error).to.equal('Error creating Blob for "upload_test.txt". Status: 400');
+          expect(detail.error).to.equal(
+            'Error creating Blob for "upload_test.txt". Status: 400',
+          );
           expect(detail.notifyHoneybadger).to.equal(true);
         });
       });
@@ -294,8 +296,22 @@ context("upload field", function() {
         cy.get(fieldSelector).within(() => {
           cy.get("input[type='file']").should(
             "have.attr",
-            "required"
+            "required",
           );
+        });
+      });
+
+      describe("when value is false", () => {
+        it("does not set required attribute to the file input", function() {
+          const firstFieldUuid = "upload_field_2_uuid";
+          const fieldSelector =
+            `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
+          cy.get(fieldSelector).within(() => {
+            cy.get("input[type='file']").should(
+              "not.have.attr",
+              "required",
+            );
+          });
         });
       });
     });
@@ -308,7 +324,7 @@ context("upload field", function() {
         cy.get(fieldSelector).within(() => {
           cy.get("input[type='file']").should(
             "not.have.attr",
-            "required"
+            "required",
           );
         });
       });
