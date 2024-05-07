@@ -60,3 +60,5 @@ export class OSCountry extends HTMLElement {
     return option;
   }
 }
+
+customElements.define("os-country", OSCountry);

@@ -78,7 +78,7 @@ export class OSFileUpload extends HTMLElement {
           const uploader = new Uploader(
             file,
             `${requestHost}/rails/active_storage/direct_uploads?workspace_id=${workspaceId}`,
-            () => {},
+            () => { },
             handleUpload,
           );
           this.uploaders.push(uploader);
@@ -141,3 +141,5 @@ export class OSFileUpload extends HTMLElement {
     return files.some((file) => file.size > maxSizeInBytes);
   }
 }
+
+customElements.define("os-file-upload", OSFileUpload);

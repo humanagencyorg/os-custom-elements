@@ -206,3 +206,5 @@ export class OSSignature extends HTMLElement {
     );
   }
 }
+
+customElements.define("os-signature", OSSignature);
