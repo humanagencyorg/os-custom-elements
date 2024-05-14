@@ -156,7 +156,9 @@ context("upload field", function() {
         cy.get("@dispatchEventSpy").should((spy) => {
           const { detail } = spy.args[3][0];
 
-          expect(detail.error).to.equal('Error creating Blob for "upload_test.txt". Status: 400');
+          expect(detail.error).to.equal(
+            'Error creating Blob for "upload_test.txt". Status: 400',
+          );
           expect(detail.notifyHoneybadger).to.equal(true);
         });
       });
@@ -279,6 +281,50 @@ context("upload field", function() {
             "have.attr",
             "accept",
             ALLOWED_FILE_TYPES,
+          );
+        });
+      });
+    });
+  });
+
+  describe("'required' attribute", () => {
+    describe("when present", () => {
+      it("sets attribute to the file input", function() {
+        const firstFieldUuid = "upload_field_1_uuid";
+        const fieldSelector =
+          `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
+        cy.get(fieldSelector).within(() => {
+          cy.get("input[type='file']").should(
+            "have.attr",
+            "required",
+          );
+        });
+      });
+
+      describe("when value is false", () => {
+        it("does not set required attribute to the file input", function() {
+          const firstFieldUuid = "upload_field_2_uuid";
+          const fieldSelector =
+            `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
+          cy.get(fieldSelector).within(() => {
+            cy.get("input[type='file']").should(
+              "not.have.attr",
+              "required",
+            );
+          });
+        });
+      });
+    });
+
+    describe("when not present", () => {
+      it("does not set required attribute to the file input", function() {
+        const firstFieldUuid = "upload_field_2_uuid";
+        const fieldSelector =
+          `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
+        cy.get(fieldSelector).within(() => {
+          cy.get("input[type='file']").should(
+            "not.have.attr",
+            "required",
           );
         });
       });
