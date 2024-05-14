@@ -1,40 +1,32 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script defer src="<%= os_custom_elements %>?workspace-id=1"></script>
-    <style>
-      .os-hidden {
-        display: none;
-      }
-    </style>
-  </head>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script defer src="<%= os_custom_elements %>?workspace-id=1"></script>
+  <style>
+    .os-hidden {
+      display: none;
+    }
+  </style>
+</head>
 
   <body>
     <h3>File upload fields</h3>
     <div>
-      <os-file-upload
-        accept="image/jpeg, video/*"
-        required
-        data-os-files-limit="2"
-        data-os-element="upload"
-        data-os-uuid="upload_field_1_uuid"
-      ></os-file-upload>
+      <os-file-upload required accept="image/jpeg, video/*" data-os-files-limit="2" data-os-element="upload"
+        data-os-uuid="upload_field_1_uuid"></os-file-upload>
     </div>
     <div>
-      <os-file-upload
-        required="false"
-        data-os-element="upload"
-        data-os-uuid="upload_field_2_uuid"
-      ></os-file-upload>
+      <os-file-upload required="false" data-os-element="upload" data-os-uuid="upload_field_2_uuid"></os-file-upload>
     </div>
     <div>
-      <os-country
-        data-os-element="country"
-        data-os-uuid="country_field_uuid"
-        value="UA"
-      ></os-country>
+      <os-country data-os-element="country" data-os-uuid="country_field_uuid" value="UA"></os-country>
+    </div>
+    <div>
+      <os-signature data-os-element="signature" data-os-uuid="signature_field_uuid_1"></os-signature>
     </div>
   </body>
+
 </html>

@@ -21,12 +21,11 @@ context("multiple upload field", function () {
         const fieldSelector =
           `os-file-upload[data-os-uuid='${firstFieldUuid}']`;
         const secondFile = Cypress.Buffer.alloc(1);
-        let apiCallCount = 0;
+        let firstApiCall = true;
 
         cy.intercept("POST", "**/direct_uploads*", (req) => {
-          apiCallCount += 1;
-
-          if (apiCallCount === 1) {
+          if (firstApiCall) {
+            firstApiCall = false;
             req.reply({
               body: {
                 "signed_id": "signed_id_value_1",
@@ -67,6 +66,7 @@ context("multiple upload field", function () {
           },
         );
 
+        cy.get("@directUploadSuccess.all").should("have.length", 2);
         cy.wait(["@directUploadSuccess", "@activeStorageSuccess"]).then(() => {
           cy.get(fieldSelector).within(
             () => {

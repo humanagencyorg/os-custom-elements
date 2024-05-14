@@ -33,7 +33,7 @@ module.exports = (_env, argv) => {
             let sourceFile;
             let componentName;
 
-            const regex = /os-(.*?)\..*.min.js/;
+            const regex = /os-(.*?)\..*.min.js$/;
             const match = filename.match(regex);
             if (match) {
               componentName = match[1];
@@ -64,6 +64,7 @@ module.exports = (_env, argv) => {
       "custom-elements": "./src/app.js",
       "country": "./src/components/country.js",
       "file-upload": "./src/components/file_upload.js",
+      "signature": "./src/components/signature.js",
     },
     output: {
       filename: "os-[name].[contenthash].min.js",
