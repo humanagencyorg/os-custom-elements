@@ -11,7 +11,7 @@ export class OSTable extends HTMLElement {
 
     if (haveLoopAttribute) {
       const responseViewUuid = this.getAttribute("data-os-view");
-      if (!responseViewUuid) {
+      if (responseViewUuid) {
         fetch(
           `${requestHost}/api/v1/response_views/${responseViewUuid}/items`,
           {
@@ -76,7 +76,7 @@ export class OSTable extends HTMLElement {
       }
     } else {
       console.warn(
-        'data-os-element="loop" attribute was not found for <os-table> element',
+        'data-os-element="loop" is not set for <os-table> element',
       );
     }
   }
