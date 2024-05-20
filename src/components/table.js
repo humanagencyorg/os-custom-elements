@@ -12,6 +12,13 @@ export class OSTable extends HTMLElement {
     if (haveLoopAttribute) {
       const responseViewUuid = this.getAttribute("data-os-view");
       if (responseViewUuid) {
+        const emptyElement = document.createElement("div");
+        emptyElement.innerText = "No data found";
+        emptyElement.classList.add("os-hidden");
+        emptyElement.setAttribute("data-os-element", "empty");
+        emptyElement.setAttribute("data-os-for", responseViewUuid);
+        this.appendChild(emptyElement);
+
         fetch(
           `${requestHost}/api/v1/response_views/${responseViewUuid}/items`,
           {
@@ -29,11 +36,8 @@ export class OSTable extends HTMLElement {
               const tbody = document.createElement("tbody");
               table.appendChild(thead);
               table.appendChild(tbody);
-              // hide the empty element
-              this.dispatchEvent(
-                new CustomEvent("table-success", { detail: { element: this } }),
-              );
-
+              // hide an empty element
+              emptyElement.classList.add("os-hidden");
               data.forEach((columns, index) => {
                 const tbodyRow = document.createElement("tr");
                 const theadRow = document.createElement("tr");
@@ -57,10 +61,8 @@ export class OSTable extends HTMLElement {
 
               this.appendChild(table);
             } else {
-              // show the empty element
-              this.dispatchEvent(
-                new CustomEvent("table-empty", { detail: { element: this } }),
-              );
+              // show an empty element
+              emptyElement.classList.remove("os-hidden");
             }
           }
         }).catch((error) => {

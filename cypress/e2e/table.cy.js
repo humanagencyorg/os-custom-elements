@@ -120,7 +120,7 @@ context("table element", function() {
         });
       });
 
-      it("dispatches a table-success event", function() {
+      it("renders empty element with os-hidden class", function() {
         cy.intercept(
           "GET",
           "**/api/v1/response_views/view_uuid/items",
@@ -140,23 +140,23 @@ context("table element", function() {
 
         cy.visit("/");
 
-        cy.get("os-table")
-          .then(($field) => {
-            cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
-          });
-
         cy.wait("@responseViewsItems").then(() => {
-          cy.get("@dispatchEventSpy").should((spy) => {
-            const { detail, target, type } = spy.args[0][0];
-            expect(type).to.equal("table-success");
-            expect(detail.element).to.equal(target);
-          });
+          cy.get("[data-os-element=empty]").should("have.class", "os-hidden");
+          cy.get("[data-os-element=empty]").should(
+            "have.attr",
+            "data-os-for",
+            "view_uuid",
+          );
+          cy.get("[data-os-element=empty]").should(
+            "have.text",
+            "No data found",
+          );
         });
       });
     });
 
     describe("when response view does not have items", () => {
-      it("dispatches a table-empty event", function() {
+      it("removes os-hidden class from an empty element", function() {
         cy.intercept(
           "GET",
           "**/api/v1/response_views/view_uuid/items",
@@ -167,17 +167,9 @@ context("table element", function() {
 
         cy.visit("/");
 
-        cy.get("os-table")
-          .then(($field) => {
-            cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
-          });
-
         cy.wait("@responseViewsItems").then(() => {
-          cy.get("@dispatchEventSpy").should((spy) => {
-            const { detail, target, type } = spy.args[0][0];
-            expect(type).to.equal("table-empty");
-            expect(detail.element).to.equal(target);
-          });
+          cy.get("[data-os-element=empty]").should("not.have.class", "os-hidden");
+          cy.get("[data-os-element=empty]").should("be.visible");
         });
       });
     });
