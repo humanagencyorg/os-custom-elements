@@ -71,7 +71,7 @@ export class OSTable extends HTMLElement {
         });
       } else {
         console.warn(
-          'data-os-view is not set for <os-table> element',
+          "data-os-view is not set for <os-table> element",
         );
       }
     } else {
