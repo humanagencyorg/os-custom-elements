@@ -38,6 +38,9 @@ export class OSTable extends HTMLElement {
               table.appendChild(tbody);
               // hide an empty element
               emptyElement.classList.add("os-hidden");
+              this.dispatchEvent(
+                new CustomEvent("table-success", { detail: { data, responseViewUuid } }),
+              );
               data.forEach((columns, index) => {
                 const tbodyRow = document.createElement("tr");
                 const theadRow = document.createElement("tr");
@@ -63,6 +66,9 @@ export class OSTable extends HTMLElement {
             } else {
               // show an empty element
               emptyElement.classList.remove("os-hidden");
+              this.dispatchEvent(
+                new CustomEvent("table-empty", { detail: { responseViewUuid } }),
+              );
             }
           }
         }).catch((error) => {

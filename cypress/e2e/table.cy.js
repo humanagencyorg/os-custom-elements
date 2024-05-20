@@ -153,6 +153,39 @@ context("table element", function() {
           );
         });
       });
+
+      it("dispatches a table-success event", function() {
+        const data = [
+          [
+            {
+              columnId: 1,
+              uuid: "column_uuid_1_1",
+              name: "Name",
+              value: "Mohamed Salah",
+            },
+          ],
+        ];
+        cy.intercept(
+          "GET",
+          "**/api/v1/response_views/view_uuid/items",
+          { data },
+        ).as("responseViewsItems");
+
+        cy.visit("/");
+
+        cy.get("os-table")
+          .then(($field) => {
+            cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
+          });
+        cy.wait("@responseViewsItems").then(() => {
+          cy.get("@dispatchEventSpy").should((spy) => {
+            const { detail, type } = spy.args[0][0];
+            expect(type).to.equal("table-success");
+            expect(detail.data).to.deep.equal(data);
+            expect(detail.responseViewUuid).to.equal("view_uuid");
+          });
+        });
+      });
     });
 
     describe("when response view does not have items", () => {
@@ -168,8 +201,33 @@ context("table element", function() {
         cy.visit("/");
 
         cy.wait("@responseViewsItems").then(() => {
-          cy.get("[data-os-element=empty]").should("not.have.class", "os-hidden");
+          cy.get("[data-os-element=empty]").should(
+            "not.have.class",
+            "os-hidden",
+          );
           cy.get("[data-os-element=empty]").should("be.visible");
+        });
+      });
+
+      it("dispatches a table-empty event", function() {
+        cy.intercept(
+          "GET",
+          "**/api/v1/response_views/view_uuid/items",
+          { data: [] },
+        ).as("responseViewsItems");
+
+        cy.visit("/");
+
+        cy.get("os-table")
+          .then(($field) => {
+            cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
+          });
+        cy.wait("@responseViewsItems").then(() => {
+          cy.get("@dispatchEventSpy").should((spy) => {
+            const { detail, type } = spy.args[0][0];
+            expect(type).to.equal("table-empty");
+            expect(detail.responseViewUuid).to.equal("view_uuid");
+          });
         });
       });
     });
