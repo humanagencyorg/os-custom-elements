@@ -186,6 +186,38 @@ context("table element", function() {
           });
         });
       });
+
+      it("dispatches a table-loading event with value: false", function() {
+        cy.intercept(
+          "GET",
+          "**/api/v1/response_views/view_uuid/items",
+          {
+            data: [
+              [
+                {
+                  "columnId": 1,
+                  "uuid": "column_uuid_1_1",
+                  "name": "Name",
+                  "value": "Mohamed Salah",
+                },
+              ],
+            ],
+          },
+        ).as("responseViewsItems");
+        cy.visit("/");
+
+        cy.get("os-table")
+          .then(($field) => {
+            cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
+          });
+        cy.wait("@responseViewsItems").then(() => {
+          cy.get("@dispatchEventSpy").should((spy) => {
+            const { detail, type } = spy.args[1][0];
+            expect(type).to.equal("table-loading");
+            expect(detail.value).to.equal(false);
+          });
+        });
+      });
     });
 
     describe("when response view does not have items", () => {
@@ -249,9 +281,32 @@ context("table element", function() {
           });
         cy.wait("@itemsError").then(() => {
           cy.get("@dispatchEventSpy").should((spy) => {
-            const { detail, type } = spy.args[0][0];
+            const { detail, type } = spy.args[1][0];
             expect(type).to.equal("table-error");
             expect(detail.error.message).to.equal("Failed to fetch");
+          });
+        });
+      });
+
+      it("dispatches a table-loading event with value: false", function() {
+        cy.intercept(
+          "GET",
+          "**/api/v1/response_views/view_uuid/items",
+          { forceNetworkError: true },
+        ).as(
+          "itemsError",
+        );
+        cy.visit("/");
+
+        cy.get("os-table")
+          .then(($field) => {
+            cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
+          });
+        cy.wait("@itemsError").then(() => {
+          cy.get("@dispatchEventSpy").should((spy) => {
+            const { detail, type } = spy.args[0][0];
+            expect(type).to.equal("table-loading");
+            expect(detail.value).to.equal(false);
           });
         });
       });

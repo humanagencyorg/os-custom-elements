@@ -18,6 +18,7 @@ export class OSTable extends HTMLElement {
         emptyElement.setAttribute("data-os-element", "empty");
         emptyElement.setAttribute("data-os-for", responseViewUuid);
         this.appendChild(emptyElement);
+        this.dispatchLoadingEvent(true);
 
         fetch(
           `${requestHost}/api/v1/response_views/${responseViewUuid}/items`,
@@ -38,9 +39,7 @@ export class OSTable extends HTMLElement {
               table.appendChild(tbody);
               // hide an empty element
               emptyElement.classList.add("os-hidden");
-              this.dispatchEvent(
-                new CustomEvent("table-success", { detail: { data, responseViewUuid } }),
-              );
+              this.dispatchSuccessEvent(data, responseViewUuid);
               data.forEach((columns, index) => {
                 const tbodyRow = document.createElement("tr");
                 const theadRow = document.createElement("tr");
@@ -66,16 +65,14 @@ export class OSTable extends HTMLElement {
             } else {
               // show an empty element
               emptyElement.classList.remove("os-hidden");
-              this.dispatchEvent(
-                new CustomEvent("table-empty", { detail: { responseViewUuid } }),
-              );
+              this.dispatchTableEmptyEvent(responseViewUuid);
             }
           }
+          this.dispatchLoadingEvent(false);
         }).catch((error) => {
           console.error(error);
-          this.dispatchEvent(
-            new CustomEvent("table-error", { detail: { error } }),
-          );
+          this.dispatchErrorEvent(error);
+          this.dispatchLoadingEvent(false);
         });
       } else {
         console.warn(
@@ -87,6 +84,34 @@ export class OSTable extends HTMLElement {
         'data-os-element="loop" is not set for <os-table> element',
       );
     }
+  }
+
+  dispatchLoadingEvent(value) {
+    this.dispatchEvent(
+      new CustomEvent("table-loading", { detail: { value, element: this } }),
+    );
+  }
+
+  dispatchSuccessEvent(data, responseViewUuid) {
+    this.dispatchEvent(
+      new CustomEvent("table-success", {
+        detail: { data, responseViewUuid },
+      }),
+    );
+  }
+
+  dispatchTableEmptyEvent(responseViewUuid) {
+    this.dispatchEvent(
+      new CustomEvent("table-empty", {
+        detail: { responseViewUuid },
+      }),
+    );
+  }
+
+  dispatchErrorEvent(error) {
+    this.dispatchEvent(
+      new CustomEvent("table-error", { detail: { error } }),
+    );
   }
 }
 
