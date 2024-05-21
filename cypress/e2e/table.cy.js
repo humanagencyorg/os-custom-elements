@@ -281,7 +281,7 @@ context("table element", function() {
           });
         cy.wait("@itemsError").then(() => {
           cy.get("@dispatchEventSpy").should((spy) => {
-            const { detail, type } = spy.args[1][0];
+            const { detail, type } = spy.args[0][0];
             expect(type).to.equal("table-error");
             expect(detail.error.message).to.equal("Failed to fetch");
           });
@@ -304,7 +304,7 @@ context("table element", function() {
           });
         cy.wait("@itemsError").then(() => {
           cy.get("@dispatchEventSpy").should((spy) => {
-            const { detail, type } = spy.args[0][0];
+            const { detail, type } = spy.args[1][0];
             expect(type).to.equal("table-loading");
             expect(detail.value).to.equal(false);
           });

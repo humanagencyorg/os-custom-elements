@@ -88,7 +88,7 @@ export class OSTable extends HTMLElement {
 
   dispatchLoadingEvent(value) {
     this.dispatchEvent(
-      new CustomEvent("table-loading", { detail: { value, element: this } }),
+      new CustomEvent("table-loading", { detail: { value } }),
     );
   }
 
