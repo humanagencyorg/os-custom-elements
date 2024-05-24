@@ -65,6 +65,7 @@ module.exports = (_env, argv) => {
       "country": "./src/components/country.js",
       "file-upload": "./src/components/file_upload.js",
       "signature": "./src/components/signature.js",
+      "table": "./src/components/table.js",
     },
     output: {
       filename: "os-[name].[contenthash].min.js",
