@@ -7,6 +7,8 @@ export class OSTable extends HTMLElement {
     const haveLoopAttribute = this.getAttribute("data-os-element") === "loop";
 
     if (haveLoopAttribute) {
+      this.dispatchEvent(new CustomEvent("table-loaded", { detail: { loaded: true } }));
+
       this.addEventListener("table-success", (event) => {
         const data = event.detail.data;
         const table = document.createElement("table");
