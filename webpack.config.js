@@ -67,6 +67,20 @@ module.exports = (_env, argv) => {
       "signature": "./src/components/signature.js",
       "table": "./src/components/table.js",
     },
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: ["@babel/preset-env", "@babel/preset-react"],
+            },
+          },
+        },
+      ],
+    },
     output: {
       filename: "os-[name].[contenthash].min.js",
       path: path.resolve(__dirname, "dist"),
