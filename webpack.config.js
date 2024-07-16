@@ -67,6 +67,10 @@ module.exports = (_env, argv) => {
       "signature": "./src/components/signature.js",
       "table": "./src/components/table.js",
     },
+    output: {
+      filename: "os-[name].[contenthash].min.js",
+      path: path.resolve(__dirname, "dist"),
+    },
     module: {
       rules: [
         {
@@ -80,10 +84,6 @@ module.exports = (_env, argv) => {
           },
         },
       ],
-    },
-    output: {
-      filename: "os-[name].[contenthash].min.js",
-      path: path.resolve(__dirname, "dist"),
     },
     devServer: {
       static: path.resolve(__dirname, "dist"),

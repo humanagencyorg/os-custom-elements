@@ -1,7 +1,7 @@
 import React, { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import RichText from "../react/RichText";
-import { host, workspaceId } from "../utils/script_attributes";
+import RichText from "./RichText";
+import { host, workspaceId } from "../../utils/script_attributes";
 
 export class OSRichText extends HTMLElement {
   constructor() {
