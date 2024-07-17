@@ -16,8 +16,12 @@ module.exports = (_env, argv) => {
         const outputFilename = assets.js.find((file) =>
           file.includes("os-custom-elements")
         );
+        const richTextFilename = assets.js.find((file) =>
+          file.includes("os-rich-text")
+        );
         return {
           "os_custom_elements": outputFilename,
+          "os_rich_text": richTextFilename,
         };
       },
     }),
@@ -66,6 +70,7 @@ module.exports = (_env, argv) => {
       "file-upload": "./src/components/file_upload.js",
       "signature": "./src/components/signature.js",
       "table": "./src/components/table.js",
+      "rich-text": "./src/components/rich_text/index.js",
     },
     output: {
       filename: "os-[name].[contenthash].min.js",
