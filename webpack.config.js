@@ -85,6 +85,7 @@ module.exports = (_env, argv) => {
             loader: "babel-loader",
             options: {
               presets: ["@babel/preset-env", "@babel/preset-react"],
+              only: ["./src/components/rich_text"],
             },
           },
         },
