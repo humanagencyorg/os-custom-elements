@@ -3,7 +3,8 @@ import ReactDOM from "react-dom";
 import { useFocused, useSlate } from "slate-react";
 import { Editor, Range } from "slate";
 import { css, cx } from "@emotion/css";
-import FormatButton from "./FormatButton";
+import MarkButton from "./MarkButton";
+import BlockButton from "./BlockButton";
 
 const Portal = ({ children }) => {
   return typeof document === "object"
@@ -86,10 +87,15 @@ export default function HoveringToolbar() {
           e.preventDefault();
         }}
       >
-        <FormatButton format="bold" icon="format_bold" />
-        <FormatButton format="italic" icon="format_italic" />
-        <FormatButton format="underline" icon="format_underlined" />
-        <FormatButton format="strikethrough" icon="format_strikethrough" />
+        <MarkButton format="bold" icon="format_bold" />
+        <MarkButton format="italic" icon="format_italic" />
+        <MarkButton format="underline" icon="format_underlined" />
+        <MarkButton format="strikethrough" icon="format_strikethrough" />
+        <BlockButton format="numbered-list" icon="format_list_numbered" />
+        <BlockButton format="bulleted-list" icon="format_list_bulleted" />
+        <BlockButton format="left" icon="format_align_left" />
+        <BlockButton format="center" icon="format_align_center" />
+        <BlockButton format="right" icon="format_align_right" />
       </Menu>
     </Portal>
   );
