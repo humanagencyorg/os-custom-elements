@@ -96,6 +96,11 @@ module.exports = (_env, argv) => {
       static: path.resolve(__dirname, "dist"),
       port: 5050,
     },
+    optimization: {
+      splitChunks: {
+        chunks: "all",
+      },
+    },
     plugins,
   };
 };
