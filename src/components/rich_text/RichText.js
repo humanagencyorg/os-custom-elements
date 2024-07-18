@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import isHotkey from "is-hotkey";
 import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
@@ -6,14 +6,18 @@ import { withHistory } from "slate-history";
 import Element from "./Element";
 import Leaf from "./Leaf";
 import HoveringToolbar from "./HoveringToolbar";
-import { toggleMark } from "./utils";
+import { slateToElements, slateToHtml, slateToText, toggleMark } from "./utils";
+import { useDebounce } from "./hooks";
 
-const initialValue = [
+const INITIAL_VALUE = [
   {
     type: "paragraph",
-    children: [{ text: "A line of text in a paragraph." }],
+    children: [{ text: "" }],
   },
 ];
+
+const prepareInitValue = (defaultValue) =>
+  (defaultValue && JSON.parse(defaultValue)) || INITIAL_VALUE;
 
 const HOTKEYS = {
   "mod+b": "bold",
@@ -24,28 +28,61 @@ const HOTKEYS = {
 
 export default function RichText() {
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const [value, setValue] = useState(prepareInitValue());
+  const debouncedValue = useDebounce(value, 500);
 
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 
+  const htmlValue = useMemo(() => slateToHtml(debouncedValue), [
+    debouncedValue,
+  ]);
+  const textValue = useMemo(() => slateToText(debouncedValue), [
+    debouncedValue,
+  ]);
+  const elementsValue = useMemo(
+    () => JSON.stringify(slateToElements(debouncedValue)),
+    [debouncedValue],
+  );
+
   return (
-    <Slate editor={editor} initialValue={initialValue}>
-      <HoveringToolbar />
-      <Editable
-        renderElement={renderElement}
-        renderLeaf={renderLeaf}
-        placeholder="Enter some rich text…"
-        onKeyDown={(event) => {
-          for (const hotkey in HOTKEYS) {
-            if (isHotkey(hotkey, event)) {
-              event.preventDefault();
-              const mark = HOTKEYS[hotkey];
-              toggleMark(editor, mark);
+    <>
+      <Slate
+        editor={editor}
+        initialValue={value}
+        onChange={(value) => setValue(value)}
+      >
+        <HoveringToolbar />
+        <Editable
+          renderElement={renderElement}
+          renderLeaf={renderLeaf}
+          placeholder="Enter some rich text…"
+          onKeyDown={(event) => {
+            for (const hotkey in HOTKEYS) {
+              if (isHotkey(hotkey, event)) {
+                event.preventDefault();
+                const mark = HOTKEYS[hotkey];
+                toggleMark(editor, mark);
+              }
             }
-          }
-        }}
+          }}
+        />
+      </Slate>
+      <input
+        type="hidden"
+        name="elements_value"
+        value={elementsValue}
       />
-    </Slate>
+      <input
+        type="hidden"
+        name="html_value"
+        value={htmlValue}
+      />
+      <input
+        type="hidden"
+        name="text_value"
+        value={textValue}
+      />
+    </>
   );
 }
-
