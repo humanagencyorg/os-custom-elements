@@ -1,6 +1,7 @@
-import React, { StrictMode } from "react";
+import React from "react";
 import { createRoot } from "react-dom/client";
 import RichText from "./RichText";
+import 'material-icons/iconfont/filled.css';
 import { host, workspaceId } from "../../utils/script_attributes";
 
 export class OSRichText extends HTMLElement {
@@ -15,11 +16,7 @@ export class OSRichText extends HTMLElement {
     this.appendChild(rootEl);
 
     const root = createRoot(rootEl);
-    root.render(
-      <StrictMode>
-        <RichText />
-      </StrictMode>,
-    );
+    root.render(<RichText />);
   }
 }
 

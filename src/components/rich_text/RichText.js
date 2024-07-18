@@ -1,9 +1,12 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import isHotkey from "is-hotkey";
-import { createEditor, Editor } from "slate";
+import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
+import { withHistory } from "slate-history";
 import Element from "./Element";
 import Leaf from "./Leaf";
+import HoveringToolbar from "./HoveringToolbar";
+import { toggleMark } from "./utils";
 
 const initialValue = [
   {
@@ -20,13 +23,14 @@ const HOTKEYS = {
 };
 
 export default function RichText() {
-  const [editor] = useState(() => withReact(createEditor()));
+  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 
   return (
     <Slate editor={editor} initialValue={initialValue}>
+      <HoveringToolbar />
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
@@ -45,17 +49,3 @@ export default function RichText() {
   );
 }
 
-const toggleMark = (editor, format) => {
-  const isActive = isMarkActive(editor, format);
-
-  if (isActive) {
-    Editor.removeMark(editor, format);
-  } else {
-    Editor.addMark(editor, format, true);
-  }
-};
-
-const isMarkActive = (editor, format) => {
-  const marks = Editor.marks(editor);
-  return marks ? marks[format] === true : false;
-};

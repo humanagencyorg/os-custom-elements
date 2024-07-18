@@ -90,6 +90,10 @@ module.exports = (_env, argv) => {
             },
           },
         },
+        {
+          test: /\.css$/i,
+          use: ["style-loader", "css-loader"],
+        },
       ],
     },
     devServer: {
