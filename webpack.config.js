@@ -81,11 +81,12 @@ module.exports = (_env, argv) => {
         {
           test: /\.js$/,
           exclude: /node_modules/,
+          include: path.resolve(__dirname, "src/components/rich_text"),
           use: {
             loader: "babel-loader",
             options: {
               presets: ["@babel/preset-env", "@babel/preset-react"],
-              only: ["./src/components/rich_text"],
+              plugins: ["@babel/plugin-transform-runtime"],
             },
           },
         },
