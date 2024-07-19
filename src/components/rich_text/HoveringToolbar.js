@@ -50,6 +50,7 @@ export default function HoveringToolbar() {
 
     if (
       !selection ||
+      !inFocus ||
       Range.isCollapsed(selection) ||
       Editor.string(editor, selection) === ""
     ) {
@@ -64,7 +65,7 @@ export default function HoveringToolbar() {
     el.style.top = `${rect.top + window.pageYOffset - el.offsetHeight}px`;
     el.style.left = `${rect.left + window.pageXOffset - el.offsetWidth / 2 + rect.width / 2
       }px`;
-  }, [editor.selection]);
+  }, [editor.selection, inFocus]);
 
   return (
     <Portal>
@@ -82,6 +83,7 @@ export default function HoveringToolbar() {
           border-radius: 4px;
           transition: opacity 0.75s;
         `}
+        onMouseDown={(event) => event.preventDefault()}
       >
         <HeadingSelect />
         <MarkButton format="bold" icon="format_bold" />
