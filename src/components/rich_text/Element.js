@@ -7,7 +7,7 @@ export default function Element(props) {
   switch (element.type) {
     case "link":
       return (
-        <a {...attributes} target="_blank" href={element.url}>
+        <a style={style} {...attributes} target="_blank" href={element.url}>
           {children}
         </a>
       );
