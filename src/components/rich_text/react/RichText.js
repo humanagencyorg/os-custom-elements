@@ -6,7 +6,8 @@ import { withHistory } from "slate-history";
 import Element from "./Element";
 import Leaf from "./Leaf";
 import HoveringToolbar from "./HoveringToolbar";
-import { slateToElements, slateToHtml, slateToText } from "./utils";
+import { slateToElements, slateToHtml, slateToText } from "../utils/convertions";
+import { withInlines } from "../utils/inlines";
 import { toggleMark } from "./MarkButton";
 
 const useDebounce = (value, delay) => {
@@ -46,7 +47,10 @@ const HOTKEYS = {
 };
 
 export default function RichText() {
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const editor = useMemo(
+    () => withInlines(withHistory(withReact(createEditor()))),
+    [],
+  );
   const [value, setValue] = useState(prepareInitValue());
   const debouncedValue = useDebounce(value, 500);
 
@@ -65,7 +69,7 @@ export default function RichText() {
   );
 
   return (
-    <div style={{ marginLeft: '200px'}}>
+    <div style={{ marginLeft: "200px" }}>
       <Slate
         editor={editor}
         initialValue={value}

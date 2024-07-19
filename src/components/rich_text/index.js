@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import RichText from "./RichText";
+import RichText from "./react/RichText";
 import 'material-icons/iconfont/filled.css';
 import { host, workspaceId } from "../../utils/script_attributes";
 

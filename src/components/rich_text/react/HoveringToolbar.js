@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import { useFocused, useSlate } from "slate-react";
 import { Editor, Range } from "slate";
@@ -38,7 +38,6 @@ export default function HoveringToolbar() {
   const menuRef = useRef(null);
   const editor = useSlate();
   const inFocus = useFocused();
-  const selectRef = useRef(null);
 
   useEffect(() => {
     const el = menuRef.current;
