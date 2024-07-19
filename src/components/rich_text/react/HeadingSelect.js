@@ -16,7 +16,7 @@ const options = [
 
 export default function HeadingSelect() {
   const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef();
+  const menuRef = useRef();
   const buttonRef = useRef();
   const editor = useSlate();
 
@@ -24,7 +24,7 @@ export default function HeadingSelect() {
     const closeOnOutsideClick = (event) => {
       if (buttonRef.current.contains(event.target)) {
         return;
-      } else if (event.target !== ref.current) {
+      } else if (event.target !== menuRef.current) {
         close();
       }
     };
@@ -36,8 +36,8 @@ export default function HeadingSelect() {
     };
   }, []);
 
-  const handleChange = (event) => {
-    toggleBlock(editor, event.target.value);
+  const handleChange = (value) => {
+    toggleBlock(editor, value);
     close();
   };
 
@@ -66,7 +66,7 @@ export default function HeadingSelect() {
         <Icon>title</Icon>
       </Button>
       <div
-        ref={ref}
+        ref={menuRef}
         className={cx(
           "hovering-heading-menu",
           css`
@@ -78,26 +78,20 @@ export default function HeadingSelect() {
         )}
       >
         {options.map((option) => (
-          <button
+          <div
             key={option.value}
-            onMouseDown={(event) => {
-              event.preventDefault();
-              handleChange(event);
+            onMouseDown={() => {
+              handleChange(option.value);
             }}
-            value={option.value}
             className={cx(
               "hovering-heading-menu-item",
               css`
-              display: block;
               width: 100%;
               padding: 8px 16px;
-              text-align: left;
-              font-size: 14px;
               font-weight: 500;
               color: #333;
-              background-color: ${isBlockActive(editor, option.value) ? "#f5f5f5" : "transparent"
+              background-color: ${isBlockActive(editor, option.value) ? "#f5f5f5" : "#fff"
                 };
-              border: none;
               cursor: pointer;
 
               &:hover {
@@ -107,7 +101,7 @@ export default function HeadingSelect() {
             )}
           >
             {option.name}
-          </button>
+          </div>
         ))}
       </div>
     </>

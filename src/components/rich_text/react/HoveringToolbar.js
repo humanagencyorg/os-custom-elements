@@ -6,6 +6,7 @@ import { css, cx } from "@emotion/css";
 import MarkButton from "./MarkButton";
 import BlockButton from "./BlockButton";
 import HeadingSelect from "./HeadingSelect";
+import LinkButton from "./LinkButton";
 
 const Portal = ({ children }) => {
   return typeof document === "object"
@@ -38,6 +39,7 @@ export default function HoveringToolbar() {
   const menuRef = useRef(null);
   const editor = useSlate();
   const inFocus = useFocused();
+  const inputRef = useRef();
 
   useEffect(() => {
     const el = menuRef.current;
@@ -47,7 +49,9 @@ export default function HoveringToolbar() {
       return;
     }
 
-    if (
+    if (inputRef.current === document.activeElement) {
+      return;
+    } else if (
       !selection ||
       !inFocus ||
       Range.isCollapsed(selection) ||
@@ -82,13 +86,20 @@ export default function HoveringToolbar() {
           border-radius: 4px;
           transition: opacity 0.75s;
         `}
-        onMouseDown={(event) => event.preventDefault()}
+        onMouseDown={(event) => {
+          if (event.target == inputRef.current) {
+            inputRef.current.focus();
+          } else {
+            event.preventDefault();
+          }
+        }}
       >
         <HeadingSelect />
         <MarkButton format="bold" icon="format_bold" />
         <MarkButton format="italic" icon="format_italic" />
         <MarkButton format="underline" icon="format_underlined" />
         <MarkButton format="strikethrough" icon="format_strikethrough" />
+        <LinkButton inputRef={inputRef} />
         <BlockButton format="numbered-list" icon="format_list_numbered" />
         <BlockButton format="bulleted-list" icon="format_list_bulleted" />
         <BlockButton format="left" icon="format_align_left" />

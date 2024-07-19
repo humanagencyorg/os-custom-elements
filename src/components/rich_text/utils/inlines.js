@@ -1,5 +1,5 @@
 import isUrl from "is-url";
-import { Editor, Element as SlateElement } from "slate";
+import { Editor, Element as SlateElement, Range, Transforms } from "slate";
 
 export const withInlines = (editor) => {
   const { insertData, insertText, isInline, isElementReadOnly, isSelectable } =
@@ -35,23 +35,35 @@ export const withInlines = (editor) => {
   return editor;
 };
 
-const isLinkActive = (editor) => {
+export const insertLink = (editor, url) => {
+  if (editor.selection) {
+    wrapLink(editor, url);
+  }
+};
+
+export const removeLink = (editor, url) => {
+  if (activeLink(editor)) {
+    unwrapLink(editor, url);
+  }
+};
+
+export const activeLink = (editor) => {
   const [link] = Editor.nodes(editor, {
     match: (n) =>
       !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "link",
   });
-  return !!link;
+  return link;
 };
 
-const unwrapLink = (editor) => {
+export const unwrapLink = (editor) => {
   Transforms.unwrapNodes(editor, {
     match: (n) =>
       !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "link",
   });
 };
 
-const wrapLink = (editor, url) => {
-  if (isLinkActive(editor)) {
+export const wrapLink = (editor, url) => {
+  if (activeLink(editor)) {
     unwrapLink(editor);
   }
 
