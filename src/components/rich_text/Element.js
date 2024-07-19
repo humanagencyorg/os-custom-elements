@@ -28,8 +28,8 @@ export default function Element(props) {
     case "paragraph":
       return <p style={style} {...attributes}>{children}</p>;
     case "caption":
-      return <small {...attributes}>{children}</small>;
+      return <small style={style} {...attributes}>{children}</small>;
     default:
-      return <p {...attributes}>{children}</p>;
+      return <p style={style} {...attributes}>{children}</p>;
   }
 }

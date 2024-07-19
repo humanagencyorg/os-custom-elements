@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import isHotkey from "is-hotkey";
 import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
@@ -6,8 +6,27 @@ import { withHistory } from "slate-history";
 import Element from "./Element";
 import Leaf from "./Leaf";
 import HoveringToolbar from "./HoveringToolbar";
-import { slateToElements, slateToHtml, slateToText, toggleMark } from "./utils";
-import { useDebounce } from "./hooks";
+import { slateToElements, slateToHtml, slateToText } from "./utils";
+import { toggleMark } from "./MarkButton";
+
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(
+    () => {
+      const handler = setTimeout(() => {
+        setDebouncedValue(value);
+      }, delay);
+
+      return () => {
+        clearTimeout(handler);
+      };
+    },
+    [value],
+  );
+
+  return debouncedValue;
+};
 
 const INITIAL_VALUE = [
   {
@@ -46,7 +65,7 @@ export default function RichText() {
   );
 
   return (
-    <>
+    <div style={{ marginLeft: '200px'}}>
       <Slate
         editor={editor}
         initialValue={value}
@@ -83,6 +102,6 @@ export default function RichText() {
         name="text_value"
         value={textValue}
       />
-    </>
+    </div>
   );
 }

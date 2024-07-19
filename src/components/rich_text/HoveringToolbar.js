@@ -5,6 +5,7 @@ import { Editor, Range } from "slate";
 import { css, cx } from "@emotion/css";
 import MarkButton from "./MarkButton";
 import BlockButton from "./BlockButton";
+import HeadingSelect from "./HeadingSelect";
 
 const Portal = ({ children }) => {
   return typeof document === "object"
@@ -16,7 +17,6 @@ const Menu = React.forwardRef(
   ({ className, ...props }, ref) => (
     <div
       {...props}
-      data-test-id="menu"
       ref={ref}
       className={cx(
         className,
@@ -35,12 +35,13 @@ const Menu = React.forwardRef(
 );
 
 export default function HoveringToolbar() {
-  const ref = useRef(null);
+  const menuRef = useRef(null);
   const editor = useSlate();
   const inFocus = useFocused();
+  const selectRef = useRef(null);
 
   useEffect(() => {
-    const el = ref.current;
+    const el = menuRef.current;
     const { selection } = editor;
 
     if (!el) {
@@ -49,7 +50,6 @@ export default function HoveringToolbar() {
 
     if (
       !selection ||
-      !inFocus ||
       Range.isCollapsed(selection) ||
       Editor.string(editor, selection) === ""
     ) {
@@ -64,12 +64,12 @@ export default function HoveringToolbar() {
     el.style.top = `${rect.top + window.pageYOffset - el.offsetHeight}px`;
     el.style.left = `${rect.left + window.pageXOffset - el.offsetWidth / 2 + rect.width / 2
       }px`;
-  });
+  }, [editor.selection]);
 
   return (
     <Portal>
       <Menu
-        ref={ref}
+        ref={menuRef}
         className={css`
           padding: 8px 7px 6px;
           position: absolute;
@@ -82,11 +82,8 @@ export default function HoveringToolbar() {
           border-radius: 4px;
           transition: opacity 0.75s;
         `}
-        onMouseDown={(e) => {
-          // prevent toolbar from taking focus away from editor
-          e.preventDefault();
-        }}
       >
+        <HeadingSelect />
         <MarkButton format="bold" icon="format_bold" />
         <MarkButton format="italic" icon="format_italic" />
         <MarkButton format="underline" icon="format_underlined" />
