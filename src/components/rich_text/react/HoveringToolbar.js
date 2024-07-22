@@ -36,10 +36,12 @@ const Menu = React.forwardRef(
 );
 
 export default function HoveringToolbar() {
-  const menuRef = useRef(null);
+  const menuRef = useRef();
+  const linkInputRef = useRef();
+  const linkButtonRef = useRef();
+
   const editor = useSlate();
   const inFocus = useFocused();
-  const inputRef = useRef();
 
   useEffect(() => {
     const el = menuRef.current;
@@ -49,7 +51,7 @@ export default function HoveringToolbar() {
       return;
     }
 
-    if (inputRef.current === document.activeElement) {
+    if (linkInputRef.current === document.activeElement) {
       return;
     } else if (
       !selection ||
@@ -87,9 +89,10 @@ export default function HoveringToolbar() {
           transition: opacity 0.75s;
         `}
         onMouseDown={(event) => {
-          if (event.target == inputRef.current) {
-            inputRef.current.focus();
-          } else {
+          if (
+            (event.target !== linkInputRef.current) ||
+            !linkButtonRef.current.contains(event.target)
+          ) {
             event.preventDefault();
           }
         }}
@@ -99,7 +102,7 @@ export default function HoveringToolbar() {
         <MarkButton format="italic" icon="format_italic" />
         <MarkButton format="underline" icon="format_underlined" />
         <MarkButton format="strikethrough" icon="format_strikethrough" />
-        <LinkButton inputRef={inputRef} />
+        <LinkButton inputRef={linkInputRef} buttonRef={linkButtonRef} />
         <BlockButton format="numbered-list" icon="format_list_numbered" />
         <BlockButton format="bulleted-list" icon="format_list_bulleted" />
         <BlockButton format="left" icon="format_align_left" />

@@ -2,14 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./Button";
 import { useSlate } from "slate-react";
 import { Icon } from "./Icon";
-import { insertLink, activeLink, unwrapLink, removeLink } from "../utils/inlines";
+import { insertLink, activeLink, removeLink } from "../utils/inlines";
 import { css, cx } from "@emotion/css";
 
-export default function LinkButton({ inputRef }) {
+export default function LinkButton({ inputRef, buttonRef }) {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const modalRef = useRef();
-  const buttonRef = useRef();
   const editor = useSlate();
 
   useEffect(() => {
@@ -18,6 +17,7 @@ export default function LinkButton({ inputRef }) {
         buttonRef.current.contains(event.target) ||
         modalRef.current.contains(event.target)
       ) {
+        inputRef.current.focus();
         return;
       } else if (event.target !== modalRef.current) {
         close();
@@ -90,6 +90,7 @@ export default function LinkButton({ inputRef }) {
         )}
       >
         <input
+          autoFocus
           type="text"
           ref={inputRef}
           value={inputValue}
