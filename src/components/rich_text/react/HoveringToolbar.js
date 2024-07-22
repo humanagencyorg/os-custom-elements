@@ -14,27 +14,6 @@ const Portal = ({ children }) => {
     : null;
 };
 
-const Menu = React.forwardRef(
-  ({ className, ...props }, ref) => (
-    <div
-      {...props}
-      ref={ref}
-      className={cx(
-        className,
-        css`
-          & > * {
-            display: inline-block;
-          }
-
-          & > * + * {
-            margin-left: 15px;
-          }
-        `,
-      )}
-    />
-  ),
-);
-
 export default function HoveringToolbar() {
   const menuRef = useRef();
   const linkInputRef = useRef();
@@ -63,31 +42,41 @@ export default function HoveringToolbar() {
       return;
     }
 
-    const domSelection = window.getSelection();
-    const domRange = domSelection.getRangeAt(0);
-    const rect = domRange.getBoundingClientRect();
-    el.style.opacity = "1";
-    el.style.top = `${rect.top + window.pageYOffset - el.offsetHeight}px`;
-    el.style.left = `${rect.left + window.pageXOffset - el.offsetWidth / 2 + rect.width / 2
-      }px`;
+    const domSelection = window.getSelection && window.getSelection();
+    if (domSelection && domSelection.rangeCount > 0) {
+      const domRange = domSelection.getRangeAt(0);
+      const rect = domRange.getBoundingClientRect();
+      const left = rect.left + window.scrollX - el.offsetWidth / 2 +
+        rect.width / 2;
+      const availableWidth = window.innerWidth - el.offsetWidth;
+      el.style.opacity = "1";
+      el.style.top = `${rect.top + window.scrollY - el.offsetHeight}px`;
+      el.style.left = `${left < 0 ? 0 : left > availableWidth ? availableWidth : left
+        }px`;
+    }
   }, [editor.selection, inFocus]);
 
   return (
     <Portal>
-      <Menu
+      <div
         ref={menuRef}
-        className={css`
-          padding: 8px 7px 6px;
+        className={cx(
+          "hovering-toolbar",
+          css`
+          padding: 4px;
           position: absolute;
           z-index: 1;
           top: -10000px;
           left: -10000px;
-          margin-top: -6px;
+          display: flex;
+          align-items: center;
           opacity: 0;
-          background-color: #222;
+          background-color: #fff;
           border-radius: 4px;
-          transition: opacity 0.75s;
-        `}
+          transition: opacity 0.5s;
+          box-shadow: 0 0 5px #ddd;
+        `,
+        )}
         onMouseDown={(event) => {
           if (
             (event.target !== linkInputRef.current) ||
@@ -108,7 +97,7 @@ export default function HoveringToolbar() {
         <BlockButton format="left" icon="format_align_left" />
         <BlockButton format="center" icon="format_align_center" />
         <BlockButton format="right" icon="format_align_right" />
-      </Menu>
+      </div>
     </Portal>
   );
 }

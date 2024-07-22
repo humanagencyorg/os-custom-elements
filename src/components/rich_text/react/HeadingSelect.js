@@ -72,8 +72,13 @@ export default function HeadingSelect() {
           css`
           display: ${isOpen ? "block" : "none"};
           position: absolute;
+          top: 40px;
+          margin: 0;
+          width: 130px;
           z-index: 1;
           background-color: #fff;
+          border-radius: 4px;
+          box-shadow: 0 0 5px #ddd;
         `,
         )}
       >
@@ -86,7 +91,6 @@ export default function HeadingSelect() {
             className={cx(
               "hovering-heading-menu-item",
               css`
-              width: 100%;
               padding: 8px 16px;
               font-weight: 500;
               color: #333;
@@ -94,6 +98,12 @@ export default function HeadingSelect() {
                 };
               cursor: pointer;
 
+              &:first-child {
+                border-radius: 4px 4px 0 0;
+              }
+              &:last-child {
+                border-radius: 0 0 4px 4px;
+              }
               &:hover {
                 background-color: #f5f5f5;
               }

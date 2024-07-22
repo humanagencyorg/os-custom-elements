@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./Button";
 import { useSlate } from "slate-react";
 import { Icon } from "./Icon";
-import { insertLink, activeLink, removeLink } from "../utils/inlines";
+import { activeLink, insertLink, removeLink } from "../utils/inlines";
 import { css, cx } from "@emotion/css";
 
 export default function LinkButton({ inputRef, buttonRef }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const modalRef = useRef();
   const editor = useSlate();
 
@@ -41,7 +41,7 @@ export default function LinkButton({ inputRef, buttonRef }) {
   };
 
   const close = () => {
-    setInputValue('');
+    setInputValue("");
     setIsOpen(false);
   };
 
@@ -85,19 +85,67 @@ export default function LinkButton({ inputRef, buttonRef }) {
           position: absolute;
           z-index: 1;
           background-color: #fff;
-          padding: 1rem;
+          border-radius: 4px;
+          box-shadow: 0 0 5px #ddd;
+          color: #444;
+          padding: 12px 16px;
+          white-space: nowrap;
+          top: 40px;
+          left: 60px;
+          & > * {
+            box-sizing: border-box;
+          }
         `,
         )}
       >
         <input
+          className={cx(
+            "hovering-link-modal-input",
+            css`
+            border: 1px solid #ccc;
+            font-size: 13px;
+            height: 26px;
+            margin: 0;
+            padding: 3px 5px;
+            width: 170px;
+          `,
+          )}
           autoFocus
           type="text"
           ref={inputRef}
           value={inputValue}
           onChange={(event) => setInputValue(event.target.value)}
         />
-        <button onClick={handleUnlink}>Unlink</button>
-        <button onClick={handleLink}>Link</button>
+        <a
+          className={cx(
+            "hovering-link-modal-button",
+            css`
+            margin-left: 10px;
+            line-height: 24px;
+            color: #06c;
+            text-decoration: none;
+            cursor: pointer;
+            `,
+          )}
+          onClick={handleUnlink}
+        >
+          Unlink
+        </a>
+        <a
+          className={cx(
+            "hovering-link-modal-button",
+            css`
+            margin-left: 10px;
+            line-height: 24px;
+            color: #06c;
+            text-decoration: none;
+            cursor: pointer;
+            `,
+          )}
+          onClick={handleLink}
+        >
+          Link
+        </a>
       </div>
     </>
   );

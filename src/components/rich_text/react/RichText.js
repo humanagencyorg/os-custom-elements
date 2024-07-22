@@ -6,9 +6,14 @@ import { withHistory } from "slate-history";
 import Element from "./Element";
 import Leaf from "./Leaf";
 import HoveringToolbar from "./HoveringToolbar";
-import { slateToElements, slateToHtml, slateToText } from "../utils/convertions";
+import {
+  slateToElements,
+  slateToHtml,
+  slateToText,
+} from "../utils/convertions";
 import { withInlines } from "../utils/inlines";
 import { toggleMark } from "./MarkButton";
+import { css, cx } from "@emotion/css";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -69,7 +74,16 @@ export default function RichText() {
   );
 
   return (
-    <div style={{ marginLeft: "200px" }}>
+    <div
+      className={cx(
+        "rich-text-container",
+        css`
+        & > * {
+         box-sizing: border-box; 
+        }
+      `,
+      )}
+    >
       <Slate
         editor={editor}
         initialValue={value}
@@ -77,9 +91,10 @@ export default function RichText() {
       >
         <HoveringToolbar />
         <Editable
+          style={{ outline: "none" }}
           renderElement={renderElement}
           renderLeaf={renderLeaf}
-          placeholder="Enter some rich text…"
+          placeholder="Enter some text…"
           onKeyDown={(event) => {
             for (const hotkey in HOTKEYS) {
               if (isHotkey(hotkey, event)) {
