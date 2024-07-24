@@ -51,7 +51,8 @@ const HOTKEYS = {
   "mod+shift+s": "strikethrough",
 };
 
-export default function RichText() {
+export default function RichText({ defaultValue }) {
+  console.log(defaultValue)
   const editor = useMemo(
     () => withInlines(withHistory(withReact(createEditor()))),
     [],

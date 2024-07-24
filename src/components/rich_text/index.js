@@ -10,13 +10,19 @@ export class OSRichText extends HTMLElement {
   }
 
   connectedCallback() {
+    let defaultValue;
     const dataFieldUuid = this.getAttribute("data-os-uuid");
     const rootEl = document.createElement("div");
     rootEl.setAttribute("id", `root-${dataFieldUuid}`);
     this.appendChild(rootEl);
 
+    this.addEventListener("rich-text-value", (event) => {
+      const { value } = event.detail;
+      defaultValue = value;
+    });
+
     const root = createRoot(rootEl);
-    root.render(<RichText />);
+    root.render(<RichText defaultValue={defaultValue} />);
   }
 }
 
