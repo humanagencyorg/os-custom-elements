@@ -41,8 +41,13 @@ const INITIAL_VALUE = [
   },
 ];
 
-const prepareInitValue = (defaultValue) =>
-  (defaultValue && JSON.parse(defaultValue)) || INITIAL_VALUE;
+const prepareInitValue = (defaultValue) => {
+  try {
+    JSON.parse(defaultValue);
+  } catch (e) {
+    return INITIAL_VALUE;
+  }
+};
 
 const HOTKEYS = {
   "mod+b": "bold",
@@ -52,12 +57,11 @@ const HOTKEYS = {
 };
 
 export default function RichText({ defaultValue }) {
-  console.log(defaultValue)
   const editor = useMemo(
     () => withInlines(withHistory(withReact(createEditor()))),
     [],
   );
-  const [value, setValue] = useState(prepareInitValue());
+  const [value, setValue] = useState(prepareInitValue(defaultValue));
   const debouncedValue = useDebounce(value, 500);
 
   const renderElement = useCallback((props) => <Element {...props} />, []);
@@ -87,7 +91,7 @@ export default function RichText({ defaultValue }) {
     >
       <Slate
         editor={editor}
-        initialValue={value}
+        value={value}
         onChange={(value) => setValue(value)}
       >
         <HoveringToolbar />
