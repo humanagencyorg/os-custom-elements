@@ -15,18 +15,16 @@ export class OSRichText extends HTMLElement {
     rootEl.setAttribute("id", `root-${dataFieldUuid}`);
     this.appendChild(rootEl);
 
-    // Slate is no longer a controlled component
+    // Slate can't be a controlled component
     // if data-os-default is present, wait for the event to set the default value before render the component
     const root = createRoot(rootEl);
     if (this.hasAttribute("data-os-default")) {
-      this.addEventListener("rich-text-value", (event) => {
-        this.defaultValue = event.detail.value;
+      this.addEventListener("rich-text-render", (event) => {
         root.render(<RichText defaultValue={event.detail.value} />);
       });
     } else {
       root.render(<RichText />);
     }
-
   }
 }
 

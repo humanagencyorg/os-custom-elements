@@ -79,17 +79,7 @@ function serializeNodeToText(node) {
     return node.text;
   }
 
-  const childrens = node.children.map(serializeNodeToText).join("");
-
-  switch (node.type) {
-    case "link":
-      return `${childrens}(${node.url})\n`;
-    case "bulleted-list":
-    case "numbered-list":
-      return childrens;
-    default:
-      return `${childrens}\n`;
-  }
+  return slateToText(node.children);
 }
 
 export function slateToText(nodes) {

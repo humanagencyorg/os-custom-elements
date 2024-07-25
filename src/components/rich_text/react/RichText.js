@@ -113,18 +113,18 @@ export default function RichText({ defaultValue }) {
       </Slate>
       <input
         type="hidden"
-        name="elements_value"
+        name="title"
+        value={textValue}
+      />
+      <input
+        type="hidden"
+        name="title_elements"
         value={elementsValue}
       />
       <input
         type="hidden"
-        name="html_value"
+        name="title_html"
         value={htmlValue}
-      />
-      <input
-        type="hidden"
-        name="text_value"
-        value={textValue}
       />
     </div>
   );
