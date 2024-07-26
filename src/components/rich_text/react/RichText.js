@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import isHotkey from "is-hotkey";
 import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
@@ -57,12 +63,13 @@ const HOTKEYS = {
 };
 
 export default function RichText({ defaultValue }) {
+  const ref = useRef();
   const editor = useMemo(
     () => withInlines(withHistory(withReact(createEditor()))),
     [],
   );
   const [value, setValue] = useState(prepareInitValue(defaultValue));
-  const debouncedValue = useDebounce(value, 500);
+  const debouncedValue = useDebounce(value, 300);
 
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
@@ -88,6 +95,7 @@ export default function RichText({ defaultValue }) {
         }
       `,
       )}
+      ref={ref}
     >
       <Slate
         editor={editor}
@@ -100,6 +108,12 @@ export default function RichText({ defaultValue }) {
           renderElement={renderElement}
           renderLeaf={renderLeaf}
           placeholder="Enter some text…"
+          onBlur={() => {
+            const osRichTextElement = ref.current.closest("os-rich-text");
+            osRichTextElement.dispatchEvent(
+              new CustomEvent("rich-text-blur"),
+            );
+          }}
           onKeyDown={(event) => {
             for (const hotkey in HOTKEYS) {
               if (isHotkey(hotkey, event)) {

@@ -1,7 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import RichText from "./react/RichText";
-import { host, workspaceId } from "../../utils/script_attributes";
 
 export class OSRichText extends HTMLElement {
   constructor() {
@@ -17,13 +16,21 @@ export class OSRichText extends HTMLElement {
     // Slate can't be a controlled component
     // if data-os-default is present, wait for the event to set the default value before render the component
     const root = createRoot(rootEl);
-    if (this.hasAttribute("data-os-default")) {
+    if (this.getAttribute("data-os-default") === "last") {
+      this.dispatchLoadingEvent(true);
       this.addEventListener("rich-text-render", (event) => {
+        this.dispatchLoadingEvent(false);
         root.render(<RichText defaultValue={event.detail.value} />);
       });
     } else {
       root.render(<RichText />);
     }
+  }
+
+  dispatchLoadingEvent(value) {
+    this.dispatchEvent(
+      new CustomEvent("rich-text-loading", { detail: { value } }),
+    );
   }
 }
 

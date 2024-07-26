@@ -21,9 +21,43 @@ context("rich text field", function() {
         cy.get("div[role=textbox]").click();
         cy.get("div[role=textbox]").type("Hello");
         cy.get("input[name=title]").should("have.value", "Hello");
-        cy.get("input[name=title_elements]").should("have.value", '[{"type":"paragraph","children":[{"text":"Hello"}]}]');
-        cy.get("input[name=title_html]").should("have.value", '<p style=""><span>Hello</span></p>');
+        cy.get("input[name=title_elements]").should(
+          "have.value",
+          '[{"type":"paragraph","children":[{"text":"Hello"}]}]',
+        );
+        cy.get("input[name=title_html]").should(
+          "have.value",
+          '<p style=""><span>Hello</span></p>',
+        );
       });
+    });
+  });
+
+  describe("on blur", () => {
+    it("dispatches rich-text-blur event", () => {
+      cy.visit("/");
+
+      const customEventStub = cy.stub();
+      cy.window().then((win) => {
+        cy.stub(win, "CustomEvent").callsFake((event, params) => {
+          if (event === "rich-text-blur") {
+            customEventStub(event, params);
+          }
+          return new win.Event(event, params);
+        });
+      });
+      cy.get("os-rich-text").first().within(() => {
+        cy.get("div[role=textbox]").click();
+      });
+
+      // Clicking outside the rich text field
+      cy.get("os-country").click();
+
+      cy.wrap(customEventStub).should("have.been.called");
+      cy.wrap(customEventStub).should(
+        "have.been.calledWithMatch",
+        "rich-text-blur",
+      );
     });
   });
 });
