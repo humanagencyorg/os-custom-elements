@@ -41,9 +41,9 @@ export const insertLink = (editor, url) => {
   }
 };
 
-export const removeLink = (editor, url) => {
+export const removeLink = (editor) => {
   if (activeLink(editor)) {
-    unwrapLink(editor, url);
+    unwrapLink(editor);
   }
 };
 
@@ -55,14 +55,14 @@ export const activeLink = (editor) => {
   return link;
 };
 
-export const unwrapLink = (editor) => {
+const unwrapLink = (editor) => {
   Transforms.unwrapNodes(editor, {
     match: (n) =>
       !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "link",
   });
 };
 
-export const wrapLink = (editor, url) => {
+const wrapLink = (editor, url) => {
   if (activeLink(editor)) {
     unwrapLink(editor);
   }

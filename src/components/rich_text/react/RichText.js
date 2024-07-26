@@ -79,7 +79,7 @@ export default function RichText({ defaultValue, placeholder }) {
         value={value}
         onChange={setValue}
       >
-        <HoveringToolbar onLinkAction={dispatchBlurEvent} />
+        <HoveringToolbar />
         <Editable
           style={{ outline: "none" }}
           renderElement={renderElement}

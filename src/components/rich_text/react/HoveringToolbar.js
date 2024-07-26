@@ -14,7 +14,7 @@ const Portal = ({ children }) => {
     : null;
 };
 
-export default function HoveringToolbar({ onLinkAction }) {
+export default function HoveringToolbar() {
   const [linkModalOpen, setLinkModalOpen] = useState(false);
   const menuRef = useRef();
   const linkInputRef = useRef();
@@ -93,7 +93,6 @@ export default function HoveringToolbar({ onLinkAction }) {
           setIsOpen={setLinkModalOpen}
           inputRef={linkInputRef}
           buttonRef={linkButtonRef}
-          onLinkAction={onLinkAction}
         />
         <BlockButton format="numbered-list" icon="format_list_numbered" />
         <BlockButton format="bulleted-list" icon="format_list_bulleted" />
