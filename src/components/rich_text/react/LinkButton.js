@@ -5,8 +5,13 @@ import { Icon } from "./Icon";
 import { activeLink, insertLink, removeLink } from "../utils/inlines";
 import { css, cx } from "@emotion/css";
 
-export default function LinkButton({ inputRef, buttonRef }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function LinkButton({
+  isOpen,
+  setIsOpen,
+  inputRef,
+  buttonRef,
+  onLinkAction,
+}) {
   const [inputValue, setInputValue] = useState("");
   const modalRef = useRef();
   const editor = useSlate();
@@ -18,7 +23,6 @@ export default function LinkButton({ inputRef, buttonRef }) {
         modalRef.current.contains(event.target)
       ) {
         inputRef.current.focus();
-        return;
       } else if (event.target !== modalRef.current) {
         close();
       }
@@ -52,6 +56,7 @@ export default function LinkButton({ inputRef, buttonRef }) {
   const handleUnlink = (e) => {
     e.preventDefault();
     removeLink(editor, inputValue);
+    onLinkAction();
 
     close();
   };
@@ -59,6 +64,7 @@ export default function LinkButton({ inputRef, buttonRef }) {
   const handleLink = (e) => {
     e.preventDefault();
     insertLink(editor, inputValue);
+    onLinkAction();
 
     close();
   };

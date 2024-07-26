@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useFocused, useSlate } from "slate-react";
 import { Editor, Range } from "slate";
@@ -14,7 +14,8 @@ const Portal = ({ children }) => {
     : null;
 };
 
-export default function HoveringToolbar() {
+export default function HoveringToolbar({ onLinkAction }) {
+  const [linkModalOpen, setLinkModalOpen] = useState(false);
   const menuRef = useRef();
   const linkInputRef = useRef();
   const linkButtonRef = useRef();
@@ -26,11 +27,7 @@ export default function HoveringToolbar() {
     const el = menuRef.current;
     const { selection } = editor;
 
-    if (!el) {
-      return;
-    }
-
-    if (linkInputRef.current === document.activeElement) {
+    if (!el || linkModalOpen) {
       return;
     } else if (
       !selection ||
@@ -53,7 +50,7 @@ export default function HoveringToolbar() {
           }px`;
       }
     }
-  }, [editor.selection, inFocus]);
+  }, [editor.selection, inFocus, linkModalOpen]);
 
   return (
     <Portal>
@@ -81,6 +78,7 @@ export default function HoveringToolbar() {
             (event.target !== linkInputRef.current) ||
             !linkButtonRef.current.contains(event.target)
           ) {
+            // prevent losing focus on the editor
             event.preventDefault();
           }
         }}
@@ -90,7 +88,13 @@ export default function HoveringToolbar() {
         <MarkButton format="italic" icon="format_italic" />
         <MarkButton format="underline" icon="format_underlined" />
         <MarkButton format="strikethrough" icon="format_strikethrough" />
-        <LinkButton inputRef={linkInputRef} buttonRef={linkButtonRef} />
+        <LinkButton
+          isOpen={linkModalOpen}
+          setIsOpen={setLinkModalOpen}
+          inputRef={linkInputRef}
+          buttonRef={linkButtonRef}
+          onLinkAction={onLinkAction}
+        />
         <BlockButton format="numbered-list" icon="format_list_numbered" />
         <BlockButton format="bulleted-list" icon="format_list_bulleted" />
         <BlockButton format="left" icon="format_align_left" />

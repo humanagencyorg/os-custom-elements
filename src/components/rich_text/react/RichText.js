@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import isHotkey from "is-hotkey";
 import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
@@ -12,33 +6,10 @@ import { withHistory } from "slate-history";
 import Element from "./Element";
 import Leaf from "./Leaf";
 import HoveringToolbar from "./HoveringToolbar";
-import {
-  slateToElements,
-  slateToHtml,
-  slateToText,
-} from "../utils/convertions";
+import { slateToHtml, slateToText } from "../utils/convertions";
 import { withInlines } from "../utils/inlines";
 import { toggleMark } from "./MarkButton";
 import { css, cx } from "@emotion/css";
-
-const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(
-    () => {
-      const handler = setTimeout(() => {
-        setDebouncedValue(value);
-      }, delay);
-
-      return () => {
-        clearTimeout(handler);
-      };
-    },
-    [value],
-  );
-
-  return debouncedValue;
-};
 
 const INITIAL_VALUE = [
   {
@@ -69,20 +40,26 @@ export default function RichText({ defaultValue, placeholder }) {
     [],
   );
   const [value, setValue] = useState(prepareInitValue(defaultValue));
-  const debouncedValue = useDebounce(value, 300);
 
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 
-  const htmlValue = useMemo(() => slateToHtml(debouncedValue), [
-    debouncedValue,
+  const dispatchBlurEvent = useCallback(() => {
+    const osRichTextElement = ref.current.closest("os-rich-text");
+    osRichTextElement.dispatchEvent(
+      new CustomEvent("rich-text-blur"),
+    );
+  }, []);
+
+  const htmlValue = useMemo(() => slateToHtml(value), [
+    value,
   ]);
-  const textValue = useMemo(() => slateToText(debouncedValue), [
-    debouncedValue,
+  const textValue = useMemo(() => slateToText(value), [
+    value,
   ]);
   const elementsValue = useMemo(
-    () => JSON.stringify(slateToElements(debouncedValue)),
-    [debouncedValue],
+    () => JSON.stringify(value),
+    [value],
   );
 
   return (
@@ -100,20 +77,15 @@ export default function RichText({ defaultValue, placeholder }) {
       <Slate
         editor={editor}
         value={value}
-        onChange={(value) => setValue(value)}
+        onChange={setValue}
       >
-        <HoveringToolbar />
+        <HoveringToolbar onLinkAction={dispatchBlurEvent} />
         <Editable
           style={{ outline: "none" }}
           renderElement={renderElement}
           renderLeaf={renderLeaf}
           placeholder={placeholder}
-          onBlur={() => {
-            const osRichTextElement = ref.current.closest("os-rich-text");
-            osRichTextElement.dispatchEvent(
-              new CustomEvent("rich-text-blur"),
-            );
-          }}
+          onBlur={dispatchBlurEvent}
           onKeyDown={(event) => {
             for (const hotkey in HOTKEYS) {
               if (isHotkey(hotkey, event)) {

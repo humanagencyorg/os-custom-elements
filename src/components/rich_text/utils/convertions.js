@@ -85,17 +85,3 @@ function serializeNodeToText(node) {
 export function slateToText(nodes) {
   return nodes.map(serializeNodeToText).join("");
 }
-
-function serializeNodeToElement(node) {
-  if (!node.type) {
-    return node;
-  }
-
-  const children = node.children.map(serializeNodeToElement);
-
-  return { ...node, children };
-}
-
-export function slateToElements(nodes) {
-  return nodes.map(serializeNodeToElement);
-}
