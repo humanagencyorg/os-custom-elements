@@ -39,20 +39,19 @@ export default function HoveringToolbar() {
       Editor.string(editor, selection) === ""
     ) {
       el.removeAttribute("style");
-      return;
-    }
-
-    const domSelection = window.getSelection && window.getSelection();
-    if (domSelection && domSelection.rangeCount > 0) {
-      const domRange = domSelection.getRangeAt(0);
-      const rect = domRange.getBoundingClientRect();
-      const left = rect.left + window.scrollX - el.offsetWidth / 2 +
-        rect.width / 2;
-      const availableWidth = window.innerWidth - el.offsetWidth;
-      el.style.opacity = "1";
-      el.style.top = `${rect.top + window.scrollY - el.offsetHeight}px`;
-      el.style.left = `${left < 0 ? 0 : left > availableWidth ? availableWidth : left
-        }px`;
+    } else {
+      const domSelection = window.getSelection && window.getSelection();
+      if (domSelection && domSelection.rangeCount > 0) {
+        const domRange = domSelection.getRangeAt(0);
+        const rect = domRange.getBoundingClientRect();
+        const left = rect.left + window.scrollX - el.offsetWidth / 2 +
+          rect.width / 2;
+        const availableWidth = window.innerWidth - el.offsetWidth;
+        el.style.opacity = "1";
+        el.style.top = `${rect.top + window.scrollY - el.offsetHeight}px`;
+        el.style.left = `${left < 0 ? 0 : left > availableWidth ? availableWidth : left
+          }px`;
+      }
     }
   }, [editor.selection, inFocus]);
 

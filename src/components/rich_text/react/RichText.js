@@ -62,7 +62,7 @@ const HOTKEYS = {
   "mod+shift+s": "strikethrough",
 };
 
-export default function RichText({ defaultValue }) {
+export default function RichText({ defaultValue, placeholder }) {
   const ref = useRef();
   const editor = useMemo(
     () => withInlines(withHistory(withReact(createEditor()))),
@@ -107,7 +107,7 @@ export default function RichText({ defaultValue }) {
           style={{ outline: "none" }}
           renderElement={renderElement}
           renderLeaf={renderLeaf}
-          placeholder="Enter some text…"
+          placeholder={placeholder}
           onBlur={() => {
             const osRichTextElement = ref.current.closest("os-rich-text");
             osRichTextElement.dispatchEvent(

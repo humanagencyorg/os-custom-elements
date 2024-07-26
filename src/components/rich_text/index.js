@@ -10,6 +10,7 @@ export class OSRichText extends HTMLElement {
   connectedCallback() {
     const dataFieldUuid = this.getAttribute("data-os-uuid");
     const rootEl = document.createElement("div");
+    const placeholder = this.getAttribute("placeholder");
     rootEl.setAttribute("id", `root-${dataFieldUuid}`);
     this.appendChild(rootEl);
 
@@ -20,10 +21,15 @@ export class OSRichText extends HTMLElement {
       this.dispatchLoadingEvent(true);
       this.addEventListener("rich-text-render", (event) => {
         this.dispatchLoadingEvent(false);
-        root.render(<RichText defaultValue={event.detail.value} />);
+        root.render(
+          <RichText
+            defaultValue={event.detail.value}
+            placeholder={placeholder}
+          />,
+        );
       });
     } else {
-      root.render(<RichText />);
+      root.render(<RichText placeholder={placeholder} />);
     }
   }
 
