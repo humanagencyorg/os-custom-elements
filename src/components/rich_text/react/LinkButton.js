@@ -10,6 +10,7 @@ export default function LinkButton({
   setIsOpen,
   inputRef,
   buttonRef,
+  onLinkChange,
 }) {
   const [inputValue, setInputValue] = useState("");
   const modalRef = useRef();
@@ -52,21 +53,12 @@ export default function LinkButton({
     isOpen ? close() : open();
   };
 
-  const dispatchBlurEvent = () => {
-    setTimeout(() => {
-      const osRichTextElement = modalRef.current.closest("os-rich-text");
-      osRichTextElement.dispatchEvent(
-        new CustomEvent("rich-text-blur"),
-      );
-    }, 500);
-  };
-
   const handleUnlink = (e) => {
     e.preventDefault();
     removeLink(editor, inputValue);
 
     close();
-    dispatchBlurEvent();
+    onLinkChange();
   };
 
   const handleLink = (e) => {
@@ -74,7 +66,7 @@ export default function LinkButton({
     insertLink(editor, inputValue);
 
     close();
-    dispatchBlurEvent();
+    onLinkChange();
   };
 
   return (

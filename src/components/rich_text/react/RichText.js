@@ -46,9 +46,11 @@ export default function RichText({ defaultValue, placeholder }) {
 
   const dispatchBlurEvent = useCallback(() => {
     const osRichTextElement = ref.current.closest("os-rich-text");
-    osRichTextElement.dispatchEvent(
-      new CustomEvent("rich-text-blur"),
-    );
+    setTimeout(() => {
+      osRichTextElement.dispatchEvent(
+        new CustomEvent("rich-text-blur"),
+      );
+    }, 500);
   }, []);
 
   const htmlValue = useMemo(() => slateToHtml(value), [
@@ -79,7 +81,7 @@ export default function RichText({ defaultValue, placeholder }) {
         value={value}
         onChange={setValue}
       >
-        <HoveringToolbar />
+        <HoveringToolbar onLinkChange={dispatchBlurEvent} />
         <Editable
           style={{ outline: "none" }}
           renderElement={renderElement}
