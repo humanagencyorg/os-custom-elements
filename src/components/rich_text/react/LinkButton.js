@@ -54,7 +54,7 @@ export default function LinkButton({
 
   const dispatchBlurEvent = () => {
     setTimeout(() => {
-      const osRichTextElement = ref.current.closest("os-rich-text");
+      const osRichTextElement = modalRef.current.closest("os-rich-text");
       osRichTextElement.dispatchEvent(
         new CustomEvent("rich-text-blur"),
       );
