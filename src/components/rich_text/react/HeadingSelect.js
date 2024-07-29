@@ -58,6 +58,7 @@ export default function HeadingSelect() {
       <Button
         ref={buttonRef}
         reversed
+        aria-label="select heading"
         onMouseDown={(event) => {
           event.preventDefault();
           toggleOpen();

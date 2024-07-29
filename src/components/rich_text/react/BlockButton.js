@@ -13,6 +13,7 @@ export default function BlockButton({ format, icon }) {
   return (
     <Button
       reversed
+      aria-label={`select ${icon}`}
       active={isBlockActive(
         editor,
         format,

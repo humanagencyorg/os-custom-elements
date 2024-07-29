@@ -75,6 +75,7 @@ export default function LinkButton({
         ref={buttonRef}
         reversed
         active={activeLink(editor)}
+        aria-label="select link"
         onMouseDown={(event) => {
           event.preventDefault();
           toggleOpen();
