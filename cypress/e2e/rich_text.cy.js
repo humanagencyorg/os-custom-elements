@@ -11,6 +11,83 @@ context("rich text field", function() {
         cy.get("input[type=hidden][name=title_html]").should("exist");
       });
     });
+
+    describe("when have value attribute", () => {
+      beforeEach(() => {
+        cy.visit("/").then(() => {
+          cy.request("/").then((response) => {
+            const body = `
+                <body>
+                  <os-rich-text data-os-element="rich-text" value="Hello"></os-rich-text>
+                </body>
+              `;
+
+            const modifiedHtml = response.body.replace(
+              /<body>[\s\S]*<\/body>/,
+              body,
+            );
+
+            cy.intercept("/", modifiedHtml);
+          });
+        });
+      });
+
+      it("renders textbox with parsed default value", () => {
+        cy.visit("/");
+
+        cy.get("os-rich-text").first().should("exist");
+        cy.get("os-rich-text").first().within(() => {
+          cy.get("div[role=textbox]").within(() => {
+            cy.get("p").should("have.text", "Hello");
+          });
+        });
+      });
+    });
+
+    describe("when have data-os-default=last attribute", () => {
+      beforeEach(() => {
+        cy.visit("/").then(() => {
+          cy.request("/").then((response) => {
+            const body = `
+                <body>
+                  <os-rich-text data-os-element="rich-text" data-os-default="last" ></os-rich-text>
+                </body>
+              `;
+
+            const modifiedHtml = response.body.replace(
+              /<body>[\s\S]*<\/body>/,
+              body,
+            );
+
+            cy.intercept("/", modifiedHtml);
+          });
+        });
+      });
+
+      describe("when rich-text-render event has been triggered", () => {
+        it("renders textbox with parsed elements value", function() {
+          cy.visit("/");
+
+          cy.get("os-rich-text").trigger("rich-text-render", {
+            force: true,
+            detail: {
+              value: [
+                {
+                  type: "paragraph",
+                  children: [{ text: "Hello" }],
+                },
+              ],
+            },
+          });
+
+          cy.get("os-rich-text").first().within(() => {
+            cy.get("div[role=textbox]").within(() => {
+              cy.get("p").should("have.text", "Hello");
+            });
+          });
+        });
+      });
+    });
   });
 
   describe("on change", () => {

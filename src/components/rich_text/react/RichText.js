@@ -11,21 +11,6 @@ import { withInlines } from "../utils/inlines";
 import { toggleMark } from "./MarkButton";
 import { css, cx } from "@emotion/css";
 
-const INITIAL_VALUE = [
-  {
-    type: "paragraph",
-    children: [{ text: "" }],
-  },
-];
-
-const prepareInitValue = (defaultValue) => {
-  try {
-    JSON.parse(defaultValue);
-  } catch (e) {
-    return INITIAL_VALUE;
-  }
-};
-
 const HOTKEYS = {
   "mod+b": "bold",
   "mod+i": "italic",
@@ -34,12 +19,12 @@ const HOTKEYS = {
 };
 
 export default function RichText({ defaultValue, placeholder }) {
+  const [value, setValue] = useState(defaultValue);
   const ref = useRef();
   const editor = useMemo(
     () => withInlines(withHistory(withReact(createEditor()))),
     [],
   );
-  const [value, setValue] = useState(prepareInitValue(defaultValue));
 
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);

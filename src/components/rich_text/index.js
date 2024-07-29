@@ -5,12 +5,20 @@ import RichText from "./react/RichText";
 export class OSRichText extends HTMLElement {
   constructor() {
     super();
+    this.emptyValue = [
+      {
+        type: "paragraph",
+        children: [{ text: "" }],
+      },
+    ];
   }
 
   connectedCallback() {
     const dataFieldUuid = this.getAttribute("data-os-uuid");
-    const rootEl = document.createElement("div");
+    const defaultValue = this.getAttribute("value");
     const placeholder = this.getAttribute("placeholder");
+
+    const rootEl = document.createElement("div");
     rootEl.setAttribute("id", `root-${dataFieldUuid}`);
     this.appendChild(rootEl);
 
@@ -23,13 +31,19 @@ export class OSRichText extends HTMLElement {
         this.dispatchLoadingEvent(false);
         root.render(
           <RichText
-            defaultValue={event.detail.value}
+            defaultValue={this.prepareDefaultValue(event.detail.value)}
             placeholder={placeholder}
           />,
         );
       });
     } else {
-      root.render(<RichText placeholder={placeholder} />);
+      this.dispatchLoadingEvent(false);
+      root.render(
+        <RichText
+          placeholder={placeholder}
+          defaultValue={this.prepareDefaultValue(defaultValue)}
+        />,
+      );
     }
   }
 
@@ -37,6 +51,25 @@ export class OSRichText extends HTMLElement {
     this.dispatchEvent(
       new CustomEvent("rich-text-loading", { detail: { value } }),
     );
+  }
+
+  prepareDefaultValue(value) {
+    if (!value) {
+      return this.emptyValue
+    };
+
+    try {
+      const newValue = JSON.parse(value);
+      return newValue || this.emptyValue;
+    } catch (e) {
+      if (typeof value === "string") {
+        const newValue = [...this.emptyValue];
+        newValue[0].children[0].text = value;
+        return newValue;
+      } else {
+        return value;
+      }
+    }
   }
 }
 
