@@ -52,11 +52,21 @@ export default function LinkButton({
     isOpen ? close() : open();
   };
 
+  const dispatchBlurEvent = () => {
+    setTimeout(() => {
+      const osRichTextElement = ref.current.closest("os-rich-text");
+      osRichTextElement.dispatchEvent(
+        new CustomEvent("rich-text-blur"),
+      );
+    }, 500);
+  };
+
   const handleUnlink = (e) => {
     e.preventDefault();
     removeLink(editor, inputValue);
 
     close();
+    dispatchBlurEvent();
   };
 
   const handleLink = (e) => {
@@ -64,6 +74,7 @@ export default function LinkButton({
     insertLink(editor, inputValue);
 
     close();
+    dispatchBlurEvent();
   };
 
   return (
