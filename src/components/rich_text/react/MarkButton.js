@@ -11,7 +11,7 @@ export default function MarkButton({ format, icon }) {
       reversed
       active={isMarkActive(editor, format)}
       onClick={() => toggleMark(editor, format)}
-      aria-label={`select ${icon}`}
+      aria-label={`select ${format}`}
     >
       <Icon>{icon}</Icon>
     </Button>

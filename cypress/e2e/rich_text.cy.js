@@ -72,15 +72,6 @@ context("rich text field", function() {
       });
     });
 
-    it("applies bold tags", () => {
-      cy.get("[aria-label='select format_bold']").click();
-
-      cy.get("div[role=textbox]").within(() => {
-        cy.get("strong").should("have.text", "Hello");
-      });
-    });
-
-
     it("applies heading tag", () => {
       cy.get("[aria-label='select heading']").click();
       cy.get(".hovering-heading-menu-item").eq(0).click();
@@ -90,8 +81,16 @@ context("rich text field", function() {
       });
     });
 
+    it("applies bold tags", () => {
+      cy.get("[aria-label='select bold']").click();
+
+      cy.get("div[role=textbox]").within(() => {
+        cy.get("strong").should("have.text", "Hello");
+      });
+    });
+
     it("applies italic tag", () => {
-      cy.get("[aria-label='select format_italic']").click();
+      cy.get("[aria-label='select italic']").click();
 
       cy.get("div[role=textbox]").within(() => {
         cy.get("em").should("have.text", "Hello");
@@ -99,7 +98,7 @@ context("rich text field", function() {
     });
 
     it("applies underlined tag", () => {
-      cy.get("[aria-label='select format_underlined']").click();
+      cy.get("[aria-label='select underline']").click();
 
       cy.get("div[role=textbox]").within(() => {
         cy.get("u").should("have.text", "Hello");
@@ -107,10 +106,50 @@ context("rich text field", function() {
     });
 
     it("applies striketrhough tag", () => {
-      cy.get("[aria-label='select format_strikethrough']").click();
+      cy.get("[aria-label='select strikethrough']").click();
 
       cy.get("div[role=textbox]").within(() => {
         cy.get("s").should("have.text", "Hello");
+      });
+    });
+
+    it("applies numbered list tag", () => {
+      cy.get("[aria-label='select numbered-list").click();
+
+      cy.get("div[role=textbox]").within(() => {
+        cy.get("ol").should("have.text", "Hello");
+      });
+    });
+
+    it("applies bulleted list tag", () => {
+      cy.get("[aria-label='select bulleted-list").click();
+
+      cy.get("div[role=textbox]").within(() => {
+        cy.get("ul").should("have.text", "Hello");
+      });
+    });
+
+    it("applies align left styles", () => {
+      cy.get("[aria-label='select left']").click();
+
+      cy.get("div[role=textbox]").within(() => {
+        cy.get("p").should("have.css", "text-align", "left");
+      });
+    });
+
+    it("applies align center styles", () => {
+      cy.get("[aria-label='select center']").click();
+
+      cy.get("div[role=textbox]").within(() => {
+        cy.get("p").should("have.css", "text-align", "center");
+      });
+    });
+
+    it("applies align right styles", () => {
+      cy.get("[aria-label='select right']").click();
+
+      cy.get("div[role=textbox]").within(() => {
+        cy.get("p").should("have.css", "text-align", "right");
       });
     });
 
