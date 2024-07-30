@@ -1,14 +1,31 @@
 context("rich text field", function() {
   describe("on initial load", () => {
-    it("renders textbox with hidden inputs", () => {
-      cy.visit("/");
+    describe("when text value is empty", () => {
+      it("renders textbox with without hidden inputs", () => {
+        cy.visit("/");
 
-      cy.get("os-rich-text").first().should("exist");
-      cy.get("os-rich-text").first().within(() => {
-        cy.get("div[role=textbox]").should("exist");
-        cy.get("input[type=hidden][name=title]").should("exist");
-        cy.get("input[type=hidden][name=title_elements]").should("exist");
-        cy.get("input[type=hidden][name=title_html]").should("exist");
+        cy.get("os-rich-text").first().should("exist");
+        cy.get("os-rich-text").first().within(() => {
+          cy.get("div[role=textbox]").should("exist");
+          cy.get("input[type=hidden][name=title]").should("not.exist");
+          cy.get("input[type=hidden][name=title_elements]").should("not.exist");
+          cy.get("input[type=hidden][name=title_html]").should("not.exist");
+        });
+      });
+    });
+
+    describe("when text value is not empty", () => {
+      it("renders textbox with three hidden inputs", () => {
+        cy.visit("/");
+
+        cy.get("os-rich-text").first().should("exist");
+        cy.get("div[role=textbox]").type("Hello");
+        cy.get("os-rich-text").first().within(() => {
+          cy.get("div[role=textbox]").should("exist");
+          cy.get("input[type=hidden][name=title]").should("exist");
+          cy.get("input[type=hidden][name=title_elements]").should("exist");
+          cy.get("input[type=hidden][name=title_html]").should("exist");
+        });
       });
     });
 
@@ -155,7 +172,6 @@ context("rich text field", function() {
       cy.visit("/");
 
       cy.get("os-rich-text").first().within(() => {
-        cy.get("div[role=textbox]").click();
         cy.get("div[role=textbox]").type("Hello");
         cy.get("input[name=title]").should("have.value", "Hello");
         cy.get("input[name=title_elements]").should(
@@ -203,7 +219,6 @@ context("rich text field", function() {
       cy.visit("/");
 
       cy.get("os-rich-text").first().within(() => {
-        cy.get("div[role=textbox]").click();
         cy.get("div[role=textbox]").type("Hello");
         cy.get("div[role=textbox]").type("{selectAll}");
       });

@@ -84,21 +84,26 @@ export default function RichText({ defaultValue, placeholder }) {
           }}
         />
       </Slate>
-      <input
-        type="hidden"
-        name="title"
-        value={textValue}
-      />
-      <input
-        type="hidden"
-        name="title_elements"
-        value={elementsValue}
-      />
-      <input
-        type="hidden"
-        name="title_html"
-        value={htmlValue}
-      />
+      {textValue &&
+        (
+          <>
+            <input
+              type="hidden"
+              name="title"
+              value={textValue}
+            />
+            <input
+              type="hidden"
+              name="title_elements"
+              value={elementsValue}
+            />
+            <input
+              type="hidden"
+              name="title_html"
+              value={htmlValue}
+            />
+          </>
+        )}
     </div>
   );
 }
