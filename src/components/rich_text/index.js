@@ -22,29 +22,27 @@ export class OSRichText extends HTMLElement {
     rootEl.setAttribute("id", `root-${dataFieldUuid}`);
     this.appendChild(rootEl);
 
-    // Slate can't be a controlled component
-    // if data-os-default is present, wait for the event to set the default value before render the component
     const root = createRoot(rootEl);
-    if (this.getAttribute("data-os-default") === "last") {
-      this.dispatchLoadingEvent(true);
-      this.addEventListener("rich-text-render", (event) => {
-        this.dispatchLoadingEvent(false);
-        root.render(
-          <RichText
-            defaultValue={this.prepareDefaultValue(event.detail.value)}
-            placeholder={placeholder}
-          />,
-        );
-      });
-    } else {
+    this.dispatchLoadingEvent(false);
+    root.render(
+      <RichText
+        placeholder={placeholder}
+        defaultValue={this.prepareDefaultValue(defaultValue)}
+      />,
+    );
+
+    // Slate can't be a controlled component
+    // we need to re-render root element to set default value
+    this.addEventListener("rich-text-render", (event) => {
+      const root = createRoot(rootEl);
       this.dispatchLoadingEvent(false);
       root.render(
         <RichText
+          defaultValue={this.prepareDefaultValue(event.detail.value)}
           placeholder={placeholder}
-          defaultValue={this.prepareDefaultValue(defaultValue)}
         />,
       );
-    }
+    });
   }
 
   dispatchLoadingEvent(value) {
@@ -55,8 +53,8 @@ export class OSRichText extends HTMLElement {
 
   prepareDefaultValue(value) {
     if (!value) {
-      return this.emptyValue
-    };
+      return this.emptyValue;
+    }
 
     try {
       const newValue = JSON.parse(value);
