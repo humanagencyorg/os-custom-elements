@@ -15,9 +15,8 @@ const Portal = ({ children }) => {
 
 export default function HoveringToolbar({ onLinkChange }) {
   const [linkModalOpen, setLinkModalOpen] = useState(false);
+  const [linkModalPosition, setLinkModalPosition] = useState();
   const menuRef = useRef();
-  const linkInputRef = useRef();
-  const linkButtonRef = useRef();
 
   const editor = useSlate();
   const inFocus = useFocused();
@@ -26,7 +25,7 @@ export default function HoveringToolbar({ onLinkChange }) {
     const el = menuRef.current;
     const { selection } = editor;
 
-    if (!el || linkModalOpen) {
+    if (!el) {
       return;
     } else if (
       !selection ||
@@ -40,13 +39,24 @@ export default function HoveringToolbar({ onLinkChange }) {
       if (domSelection && domSelection.rangeCount > 0) {
         const domRange = domSelection.getRangeAt(0);
         const rect = domRange.getBoundingClientRect();
-        const left = rect.left + window.scrollX - el.offsetWidth / 2 +
+        const preLeft = rect.left + window.scrollX - el.offsetWidth / 2 +
           rect.width / 2;
         const availableWidth = window.innerWidth - el.offsetWidth;
+        const top = rect.top + window.scrollY - el.offsetHeight;
+        const left = preLeft < 0
+          ? 0
+          : preLeft > availableWidth
+            ? availableWidth
+            : preLeft;
+        if (!linkModalOpen) {
+          setLinkModalPosition({
+            top: `${top}px`,
+            left: `${left + 100}px`,
+          });
+        }
         el.style.opacity = "1";
-        el.style.top = `${rect.top + window.scrollY - el.offsetHeight}px`;
-        el.style.left = `${left < 0 ? 0 : left > availableWidth ? availableWidth : left
-          }px`;
+        el.style.top = `${top}px`;
+        el.style.left = `${left}px`;
       }
     }
   }, [editor.selection, inFocus, linkModalOpen]);
@@ -57,13 +67,8 @@ export default function HoveringToolbar({ onLinkChange }) {
         ref={menuRef}
         className="hovering-toolbar"
         onMouseDown={(event) => {
-          if (
-            (event.target !== linkInputRef.current) ||
-            !linkButtonRef.current.contains(event.target)
-          ) {
-            // prevent losing focus on the editor
-            event.preventDefault();
-          }
+          // prevent losing focus on the editor
+          event.preventDefault();
         }}
       >
         <HeadingSelect />
@@ -72,10 +77,9 @@ export default function HoveringToolbar({ onLinkChange }) {
         <MarkButton format="underline" icon="format_underlined" />
         <MarkButton format="strikethrough" icon="format_strikethrough" />
         <LinkButton
+          position={linkModalPosition}
           isOpen={linkModalOpen}
           setIsOpen={setLinkModalOpen}
-          inputRef={linkInputRef}
-          buttonRef={linkButtonRef}
           onLinkChange={onLinkChange}
         />
         <BlockButton format="numbered-list" icon="format_list_numbered" />

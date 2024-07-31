@@ -1,5 +1,6 @@
 import isUrl from "is-url";
 import { Editor, Element as SlateElement, Range, Transforms } from "slate";
+import { ReactEditor } from "slate-react";
 
 export const withInlines = (editor) => {
   const { insertData, insertText, isInline, isElementReadOnly, isSelectable } =
@@ -44,6 +45,9 @@ export const insertLink = (editor, url) => {
 export const removeLink = (editor) => {
   if (activeLink(editor)) {
     unwrapLink(editor);
+  } else {
+    ReactEditor.focus(editor);
+    Transforms.collapse(editor, { edge: "end" });
   }
 };
 
@@ -56,10 +60,12 @@ export const activeLink = (editor) => {
 };
 
 const unwrapLink = (editor) => {
+  ReactEditor.focus(editor);
   Transforms.unwrapNodes(editor, {
     match: (n) =>
       !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "link",
   });
+  Transforms.collapse(editor, { edge: "end" });
 };
 
 const wrapLink = (editor, url) => {
@@ -68,6 +74,8 @@ const wrapLink = (editor, url) => {
   }
 
   const { selection } = editor;
+  ReactEditor.focus(editor);
+
   const isCollapsed = selection && Range.isCollapsed(selection);
   const link = {
     type: "link",

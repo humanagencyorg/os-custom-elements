@@ -67,7 +67,7 @@ export default function HeadingSelect() {
       </Button>
       <div
         ref={menuRef}
-        className={`hovering-heading-menu${isOpen ? "" : " os-hidden"}`}
+        className={`hovering-heading-menu ${isOpen ? "" : "os-hidden"}`}
       >
         {options.map((option) => (
           <div
@@ -75,8 +75,8 @@ export default function HeadingSelect() {
             onMouseDown={() => {
               handleChange(option.value);
             }}
-            className={`hovering-heading-menu-item${isBlockActive(editor, option.value)
-                ? " hovering-heading-menu-item-active"
+            className={`hovering-heading-menu-item ${isBlockActive(editor, option.value)
+                ? "hovering-heading-menu-item-active"
                 : ""
               }`}
           >
