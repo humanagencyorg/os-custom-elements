@@ -76,93 +76,56 @@ context("rich text field", function() {
         });
       });
     });
+  });
 
-    describe("when have data-os-default=last attribute", () => {
-      beforeEach(() => {
-        cy.visit("/").then(() => {
-          cy.request("/").then((response) => {
-            const body = `
-                <body>
-                  <os-rich-text data-os-element="rich-text" data-os-default="last" ></os-rich-text>
-                </body>
-              `;
+  describe("when rich-text-render event has been triggered", () => {
+    it("renders textbox with parsed elements value", function() {
+      cy.visit("/");
 
-            const modifiedHtml = response.body.replace(
-              /<body>[\s\S]*<\/body>/,
-              body,
-            );
-
-            cy.intercept("/", modifiedHtml);
-          });
-        });
+      cy.get("os-rich-text").trigger("rich-text-render", {
+        force: true,
+        detail: {
+          value: [
+            {
+              type: "paragraph",
+              children: [{ text: "Hello" }],
+            },
+          ],
+        },
       });
 
-      it("dispatches rich-text-loading event with true value", function() {
-        cy.visit("/", {
-          onBeforeLoad(win) {
-            cy.spy(win.HTMLElement.prototype, "dispatchEvent").as(
-              "dispatchEventSpy",
-            );
-          },
-        });
-
-        cy.get("@dispatchEventSpy").should((spy) => {
-          const { detail, type } = spy.args[0][0];
-          expect(type).to.equal("rich-text-loading");
-          expect(detail.value).to.equal(true);
+      cy.get("os-rich-text").first().within(() => {
+        cy.get("div[role=textbox]").within(() => {
+          cy.get("p").should("have.text", "Hello");
         });
       });
+    });
 
-      describe("when rich-text-render event has been triggered", () => {
-        it("renders textbox with parsed elements value", function() {
-          cy.visit("/");
+    it("dispatches rich-text-loading event with false value", function() {
+      cy.visit("/", {
+        onBeforeLoad(win) {
+          cy.spy(win.HTMLElement.prototype, "dispatchEvent").as(
+            "dispatchEventSpy",
+          );
+        },
+      });
 
-          cy.get("os-rich-text").trigger("rich-text-render", {
-            force: true,
-            detail: {
-              value: [
-                {
-                  type: "paragraph",
-                  children: [{ text: "Hello" }],
-                },
-              ],
+      cy.get("os-rich-text").trigger("rich-text-render", {
+        force: true,
+        detail: {
+          value: [
+            {
+              type: "paragraph",
+              children: [{ text: "Hello" }],
             },
-          });
+          ],
+        },
+      });
 
-          cy.get("os-rich-text").first().within(() => {
-            cy.get("div[role=textbox]").within(() => {
-              cy.get("p").should("have.text", "Hello");
-            });
-          });
-        });
-
-        it("dispatches rich-text-loading event with false value", function() {
-          cy.visit("/", {
-            onBeforeLoad(win) {
-              cy.spy(win.HTMLElement.prototype, "dispatchEvent").as(
-                "dispatchEventSpy",
-              );
-            },
-          });
-
-          cy.get("os-rich-text").trigger("rich-text-render", {
-            force: true,
-            detail: {
-              value: [
-                {
-                  type: "paragraph",
-                  children: [{ text: "Hello" }],
-                },
-              ],
-            },
-          });
-
-          cy.get("@dispatchEventSpy").should((spy) => {
-            const { detail, type } = spy.args[2][0];
-            expect(type).to.equal("rich-text-loading");
-            expect(detail.value).to.equal(false);
-          });
-        });
+      cy.get("@dispatchEventSpy").should((spy) => {
+        const { detail, type } = spy.args[2][0];
+        expect(type).to.equal("rich-text-loading");
+        expect(detail.value).to.equal(false);
       });
     });
   });

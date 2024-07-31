@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSlate } from "slate-react";
 import { isBlockActive, toggleBlock } from "./BlockButton";
-import { css, cx } from "@emotion/css";
 import { Button } from "./Button";
 import { Icon } from "./Icon";
 
@@ -68,20 +67,7 @@ export default function HeadingSelect() {
       </Button>
       <div
         ref={menuRef}
-        className={cx(
-          "hovering-heading-menu",
-          css`
-          display: ${isOpen ? "block" : "none"};
-          position: absolute;
-          top: 40px;
-          margin: 0;
-          width: 130px;
-          z-index: 1;
-          background-color: #fff;
-          border-radius: 4px;
-          box-shadow: 0 0 5px #ddd;
-        `,
-        )}
+        className={`hovering-heading-menu${isOpen ? "" : " os-hidden"}`}
       >
         {options.map((option) => (
           <div
@@ -89,27 +75,10 @@ export default function HeadingSelect() {
             onMouseDown={() => {
               handleChange(option.value);
             }}
-            className={cx(
-              "hovering-heading-menu-item",
-              css`
-              padding: 8px 16px;
-              font-weight: 500;
-              color: #333;
-              background-color: ${isBlockActive(editor, option.value) ? "#f5f5f5" : "#fff"
-                };
-              cursor: pointer;
-
-              &:first-child {
-                border-radius: 4px 4px 0 0;
-              }
-              &:last-child {
-                border-radius: 0 0 4px 4px;
-              }
-              &:hover {
-                background-color: #f5f5f5;
-              }
-            `,
-            )}
+            className={`hovering-heading-menu-item${isBlockActive(editor, option.value)
+                ? " hovering-heading-menu-item-active"
+                : ""
+              }`}
           >
             {option.name}
           </div>

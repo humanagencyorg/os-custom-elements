@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useFocused, useSlate } from "slate-react";
 import { Editor, Range } from "slate";
-import { css, cx } from "@emotion/css";
 import MarkButton from "./MarkButton";
 import BlockButton from "./BlockButton";
 import HeadingSelect from "./HeadingSelect";
@@ -56,23 +55,7 @@ export default function HoveringToolbar({ onLinkChange }) {
     <Portal>
       <div
         ref={menuRef}
-        className={cx(
-          "hovering-toolbar",
-          css`
-          padding: 4px;
-          position: absolute;
-          z-index: 1;
-          top: -10000px;
-          left: -10000px;
-          display: flex;
-          align-items: center;
-          opacity: 0;
-          background-color: #fff;
-          border-radius: 4px;
-          transition: opacity 0.5s;
-          box-shadow: 0 0 5px #ddd;
-        `,
-        )}
+        className="hovering-toolbar"
         onMouseDown={(event) => {
           if (
             (event.target !== linkInputRef.current) ||

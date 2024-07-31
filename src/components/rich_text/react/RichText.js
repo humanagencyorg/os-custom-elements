@@ -9,7 +9,6 @@ import HoveringToolbar from "./HoveringToolbar";
 import { slateToHtml, slateToText } from "../utils/convertions";
 import { withInlines } from "../utils/inlines";
 import { toggleMark } from "./MarkButton";
-import { css, cx } from "@emotion/css";
 
 const HOTKEYS = {
   "mod+b": "bold",
@@ -51,14 +50,7 @@ export default function RichText({ defaultValue, placeholder }) {
 
   return (
     <div
-      className={cx(
-        "rich-text-container",
-        css`
-        & > * {
-         box-sizing: border-box; 
-        }
-      `,
-      )}
+      className="rich-text-container"
       ref={ref}
     >
       <Slate

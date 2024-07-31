@@ -10,7 +10,6 @@ import FormatListNumbered from "../icons/format_list_numbered.svg";
 import FormatAlignLeft from "../icons/format_align_left.svg";
 import FormatAlignCenter from "../icons/format_align_center.svg";
 import FormatAlignRight from "../icons/format_align_right.svg";
-import { css, cx } from "@emotion/css";
 
 const icons = {
   link: Link,
@@ -29,13 +28,7 @@ const icons = {
 export function Icon({ children }) {
   return (
     <img
-      className={cx(
-        "hovering-toolbar-icon",
-        css`
-      width: 20px;
-      height: 20px;
-    `,
-      )}
+      className="hovering-toolbar-icon"
       src={icons[children]}
     />
   );
