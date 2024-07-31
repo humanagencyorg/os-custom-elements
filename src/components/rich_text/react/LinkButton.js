@@ -15,7 +15,6 @@ export default function LinkButton({
   position,
   isOpen,
   setIsOpen,
-  onLinkChange,
 }) {
   const [inputValue, setInputValue] = useState("");
   const modalRef = useRef();
@@ -65,7 +64,6 @@ export default function LinkButton({
     removeLink(editor, inputValue);
 
     close();
-    onLinkChange();
   };
 
   const handleLink = (e) => {
@@ -73,7 +71,6 @@ export default function LinkButton({
     insertLink(editor, inputValue);
 
     close();
-    onLinkChange();
   };
 
   return (

@@ -13,7 +13,7 @@ const Portal = ({ children }) => {
     : null;
 };
 
-export default function HoveringToolbar({ onLinkChange }) {
+export default function HoveringToolbar() {
   const [linkModalOpen, setLinkModalOpen] = useState(false);
   const [linkModalPosition, setLinkModalPosition] = useState();
   const menuRef = useRef();
@@ -80,7 +80,6 @@ export default function HoveringToolbar({ onLinkChange }) {
           position={linkModalPosition}
           isOpen={linkModalOpen}
           setIsOpen={setLinkModalOpen}
-          onLinkChange={onLinkChange}
         />
         <BlockButton format="numbered-list" icon="format_list_numbered" />
         <BlockButton format="bulleted-list" icon="format_list_bulleted" />

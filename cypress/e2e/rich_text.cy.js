@@ -274,31 +274,11 @@ context("rich text field", function() {
         cy.get(".hovering-link-modal-input").type("https://www.example.com");
         cy.get(".hovering-link-modal-button").eq(1).click();
 
+        cy.focused().should("have.attr", "role", "textbox");
         cy.get("div[role=textbox]").within(() => {
           cy.get("a").should("exist");
           cy.get("a").should("have.attr", "href", "https://www.example.com");
         });
-      });
-
-      it("dispatches rich-text-blur event", () => {
-        const customEventStub = cy.stub();
-        cy.window().then((win) => {
-          cy.stub(win, "CustomEvent").callsFake((event, params) => {
-            if (event === "rich-text-blur") {
-              customEventStub(event, params);
-            }
-            return new win.Event(event, params);
-          });
-        });
-
-        cy.get("[aria-label='select link']").click();
-        cy.get(".hovering-link-modal-button").eq(1).click();
-
-        cy.wrap(customEventStub).should("have.been.calledTwice");
-        cy.wrap(customEventStub).should(
-          "have.been.calledWithMatch",
-          "rich-text-blur",
-        );
       });
     });
 
@@ -319,30 +299,10 @@ context("rich text field", function() {
         );
         cy.get(".hovering-link-modal-button").eq(0).click();
 
+        cy.focused().should("have.attr", "role", "textbox");
         cy.get("div[role=textbox]").within(() => {
           cy.get("a").should("not.exist");
         });
-      });
-
-      it("dispatches rich-text-blur event", () => {
-        const customEventStub = cy.stub();
-        cy.window().then((win) => {
-          cy.stub(win, "CustomEvent").callsFake((event, params) => {
-            if (event === "rich-text-blur") {
-              customEventStub(event, params);
-            }
-            return new win.Event(event, params);
-          });
-        });
-
-        cy.get("[aria-label='select link']").click();
-        cy.get(".hovering-link-modal-button").eq(0).click();
-
-        cy.wrap(customEventStub).should("have.been.calledTwice");
-        cy.wrap(customEventStub).should(
-          "have.been.calledWithMatch",
-          "rich-text-blur",
-        );
       });
     });
   });
