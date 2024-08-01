@@ -1,5 +1,24 @@
 context("rich text field", function() {
   describe("on initial load", () => {
+    beforeEach(() => {
+      cy.visit("/").then(() => {
+        cy.request("/").then((response) => {
+          const body = `
+                <body>
+                  <os-rich-text placeholder="Enter some text..." data-os-element="rich-text"></os-rich-text>
+                </body>
+              `;
+
+          const modifiedHtml = response.body.replace(
+            /<body>[\s\S]*<\/body>/,
+            body,
+          );
+
+          cy.intercept("/", modifiedHtml);
+        });
+      });
+    });
+
     describe("when text value is empty", () => {
       it("renders textbox with without hidden inputs", () => {
         cy.visit("/");
