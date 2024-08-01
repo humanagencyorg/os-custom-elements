@@ -310,13 +310,13 @@ context("rich text field", function() {
       it("wraps link", () => {
         cy.get("[aria-label='select link']").click();
         cy.get(".hovering-link-modal-input").type("https://www.example.com");
-        cy.get(".hovering-link-modal-button").eq(1).click();
+        cy.get(".hovering-toolbar-button").eq(1).click();
 
-        cy.focused().should("have.attr", "role", "textbox");
         cy.get("div[role=textbox]").within(() => {
           cy.get("a").should("exist");
           cy.get("a").should("have.attr", "href", "https://www.example.com");
         });
+        cy.focused().should("have.attr", "role", "textbox");
       });
     });
 
@@ -324,7 +324,7 @@ context("rich text field", function() {
       it("unwraps link", () => {
         cy.get("[aria-label='select link']").click();
         cy.get(".hovering-link-modal-input").type("https://www.example.com");
-        cy.get(".hovering-link-modal-button").eq(1).click();
+        cy.get(".hovering-toolbar-button").eq(1).click();
 
         cy.get("os-rich-text").first().within(() => {
           cy.get("div[role=textbox]").type("{selectAll}");
@@ -335,12 +335,12 @@ context("rich text field", function() {
           "have.value",
           "https://www.example.com",
         );
-        cy.get(".hovering-link-modal-button").eq(0).click();
+        cy.get(".hovering-toolbar-button").eq(0).click();
 
-        cy.focused().should("have.attr", "role", "textbox");
         cy.get("div[role=textbox]").within(() => {
           cy.get("a").should("not.exist");
         });
+        cy.focused().should("have.attr", "role", "textbox");
       });
     });
   });

@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "../icons/link.svg";
+import LinkOff from "../icons/link_off.svg";
 import Title from "../icons/title.svg";
 import FormatBold from "../icons/format_bold.svg";
 import FormatItalic from "../icons/format_italic.svg";
@@ -13,6 +14,7 @@ import FormatAlignRight from "../icons/format_align_right.svg";
 
 const icons = {
   link: Link,
+  link_off: LinkOff,
   title: Title,
   format_bold: FormatBold,
   format_italic: FormatItalic,

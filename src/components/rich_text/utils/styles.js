@@ -93,20 +93,9 @@ export const defaultStyles = `
     font-size: 13px;
     height: 26px;
     margin: 0;
+    margin-right: 5px;
     padding: 3px 5px;
     width: 170px;
-  }
-  .hovering-link-modal-button {
-    margin-left: 6px;
-    line-height: 24px;
-    color: #333;
-    text-decoration: none;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-  }
-  .hovering-link-modal-button:hover {
-    background-color: #f5f5f5;
   }
   .os-hidden {
     display: none;

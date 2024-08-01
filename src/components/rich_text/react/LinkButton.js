@@ -77,7 +77,6 @@ export default function LinkButton({
     <>
       <Button
         ref={buttonRef}
-        reversed
         active={activeLink(editor)}
         aria-label="select link"
         onMouseDown={(event) => {
@@ -101,18 +100,12 @@ export default function LinkButton({
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
           />
-          <a
-            className="hovering-link-modal-button"
-            onClick={handleUnlink}
-          >
-            Unlink
-          </a>
-          <a
-            className="hovering-link-modal-button"
-            onClick={handleLink}
-          >
-            Link
-          </a>
+          <Button onClick={handleUnlink}>
+            <Icon>link_off</Icon>
+          </Button>
+          <Button onClick={handleLink}>
+            <Icon>link</Icon>
+          </Button>
         </div>
       </Portal>
     </>
