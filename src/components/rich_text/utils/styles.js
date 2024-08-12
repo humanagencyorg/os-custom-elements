@@ -3,6 +3,11 @@ export const defaultStyles = `
   .rich-text-container > * {
     box-sizing: border-box;
   }
+  .rich-text-input {
+    border: 1px solid #ccc;
+    padding: 2px 8px;
+    outline: none;
+  }
   .hovering-toolbar {
     padding: 4px;
     position: absolute;

@@ -58,7 +58,7 @@ export default function RichText({ defaultValue, placeholder }) {
       >
         <HoveringToolbar />
         <Editable
-          style={{ outline: "none" }}
+          className="rich-text-input"
           renderElement={renderElement}
           renderLeaf={renderLeaf}
           placeholder={placeholder}
