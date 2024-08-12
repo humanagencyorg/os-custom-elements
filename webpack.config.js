@@ -16,8 +16,12 @@ module.exports = (_env, argv) => {
         const outputFilename = assets.js.find((file) =>
           file.includes("os-custom-elements")
         );
+        const richTextFilename = assets.js.find((file) =>
+          file.includes("os-rich-text")
+        );
         return {
           "os_custom_elements": outputFilename,
+          "os_rich_text": richTextFilename,
         };
       },
     }),
@@ -66,10 +70,35 @@ module.exports = (_env, argv) => {
       "file-upload": "./src/components/file_upload.js",
       "signature": "./src/components/signature.js",
       "table": "./src/components/table.js",
+      "rich-text": "./src/components/rich_text/index.js",
     },
     output: {
       filename: "os-[name].[contenthash].min.js",
       path: path.resolve(__dirname, "dist"),
+    },
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          include: path.resolve(__dirname, "src/components/rich_text"),
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: ["@babel/preset-env", "@babel/preset-react"],
+              plugins: ["@babel/plugin-transform-runtime"],
+            },
+          },
+        },
+        {
+          test: /\.css$/i,
+          use: ["style-loader", "css-loader"],
+        },
+        {
+          test: /\.svg$/,
+          type: "asset/inline",
+        },
+      ],
     },
     devServer: {
       static: path.resolve(__dirname, "dist"),
