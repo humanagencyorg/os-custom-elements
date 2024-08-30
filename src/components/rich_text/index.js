@@ -46,7 +46,7 @@ export class OSRichText extends HTMLElement {
 
     // Slate can't be a controlled component
     // we need to re-render root element to set default value
-    this.addEventListener("rich-text-render", (event) => {
+    this.addEventListener("initialized", (event) => {
       const root = createRoot(rootEl);
       this.dispatchLoadingEvent(false);
       root.render(
