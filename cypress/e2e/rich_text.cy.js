@@ -97,7 +97,7 @@ context("rich text field", function() {
     });
   });
 
-  describe("when rich-text-render event has been triggered", () => {
+  describe("when initialized event has been triggered", () => {
     beforeEach(() => {
       cy.visit("/").then(() => {
         cy.request("/").then((response) => {
@@ -120,7 +120,7 @@ context("rich text field", function() {
     it("renders textbox with parsed elements value", function() {
       cy.visit("/");
 
-      cy.get("os-rich-text").trigger("rich-text-render", {
+      cy.get("os-rich-text").trigger("initialized", {
         force: true,
         detail: {
           value: [
@@ -148,7 +148,7 @@ context("rich text field", function() {
         },
       });
 
-      cy.get("os-rich-text").trigger("rich-text-render", {
+      cy.get("os-rich-text").trigger("initialized", {
         force: true,
         detail: {
           value: [
