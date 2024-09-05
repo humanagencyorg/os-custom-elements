@@ -11,6 +11,11 @@ export class OSTable extends HTMLElement {
 
     if (haveLoopAttribute) {
       const responseViewUuid = this.getAttribute("data-os-view");
+      const resultsPerPage = this.getAttribute("data-os-results-per-page");
+      let params = '';
+      if (resultsPerPage) {
+        params = `?rows_per_page=${resultsPerPage}`;
+      }
       if (responseViewUuid) {
         const emptyElement = document.createElement("div");
         emptyElement.innerText = "No data found";
@@ -21,7 +26,7 @@ export class OSTable extends HTMLElement {
         this.dispatchLoadingEvent(true);
 
         fetch(
-          `${requestHost}/api/v1/response_views/${responseViewUuid}/items`,
+          `${requestHost}/api/v1/response_views/${responseViewUuid}/items${params}`,
           {
             credentials: "include",
             headers: {
