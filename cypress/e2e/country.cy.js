@@ -77,9 +77,11 @@ context("country field", function() {
       cy.visit("/");
 
       cy.wait("@countriesSuccess").then(() => {
-        cy.get("select").find("option").should("have.length", 4);
-        cy.get("select").find("option").eq(1).should("have.value", "CA");
-        cy.get("select").find("option").eq(1).should("have.text", "Canada");
+        cy.get("os-country").eq(0).within(() => {
+          cy.get("select").find("option").should("have.length", 6);
+          cy.get("select").find("option").eq(1).should("have.value", "CA");
+          cy.get("select").find("option").eq(1).should("have.text", "Canada");
+        });
       });
     });
 
@@ -93,7 +95,9 @@ context("country field", function() {
       cy.visit("/");
 
       cy.wait("@countriesSuccess").then(() => {
-        cy.get("select").should("have.value", "UA");
+        cy.get("os-country").eq(0).within(() => {
+          cy.get("select").should("have.value", "UA");
+        })
       });
     });
 
@@ -107,9 +111,30 @@ context("country field", function() {
       cy.visit("/");
 
       cy.wait("@countriesSuccess").then(() => {
-        cy.get("select").select("CA");
+        cy.get("os-country").eq(0).within(() => {
+          cy.get("select").select("CA");
+        })
 
-        cy.get("os-country").should("have.attr", "value", "CA");
+        cy.get("os-country").eq(0).should("have.attr", "value", "CA");
+      });
+    });
+
+    describe("when data-os-firstoptions attribute is present", () => {
+      it("it should set countries from the attribute value to the top of the list", function() {
+        cy.intercept(
+          "GET",
+          "**/api/v1/data_fields/**",
+          this.countriesResponse
+        ).as("countriesSuccess");
+
+        cy.visit("/");
+
+        cy.wait("@countriesSuccess").then(() => {
+          cy.get("os-country").eq(1).within(() => {
+            cy.get("select option").eq(1).should("have.value", "US");
+            cy.get("select option").eq(2).should("have.value", "IT");
+          })
+        });
       });
     });
   });
@@ -125,7 +150,7 @@ context("country field", function() {
       );
       cy.visit("/");
 
-      cy.get("os-country")
+      cy.get("os-country").eq(0)
         .then(($field) => {
           cy.spy($field[0], "dispatchEvent").as("dispatchEventSpy");
         });
@@ -142,9 +167,11 @@ context("country field", function() {
     it("shows disabled selected option with text from an attribute value", function() {
       cy.visit("/");
 
-      cy.get("select")
-        .find("option:selected:disabled")
-        .should("have.text", "Select country");
+      cy.get("os-country").eq(0).within(() => {
+        cy.get("select")
+          .find("option:selected:disabled")
+          .should("have.text", "Select country");
+      });
     });
   })
 });
