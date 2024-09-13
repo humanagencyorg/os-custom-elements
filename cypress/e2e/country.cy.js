@@ -123,7 +123,7 @@ context("country field", function() {
       it("it should set countries from the attribute value to the top of the list", function() {
         cy.intercept(
           "GET",
-          "**/api/v1/data_fields/country_field_uuid/countries",
+          "**/api/v1/data_fields/**",
           this.countriesResponse
         ).as("countriesSuccess");
 
