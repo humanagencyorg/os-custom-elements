@@ -205,7 +205,7 @@ context("rich text field", function() {
       });
 
       // Clicking outside the rich text field
-      cy.get("os-country").click();
+      cy.get("os-country").eq(0).click();
 
       cy.wrap(customEventStub).should("have.been.called");
       cy.wrap(customEventStub).should(
