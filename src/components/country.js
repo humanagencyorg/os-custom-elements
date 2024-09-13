@@ -9,10 +9,11 @@ export class OSCountry extends HTMLElement {
     const defaultValue = this.getAttribute("value");
     const dataFieldUuid = this.getAttribute("data-os-uuid");
     const firstOptions = this.getAttribute("data-os-firstoptions");
+    const placeholder = this.getAttribute("data-os-placeholder");
     const selectEl = document.createElement("select");
     this.appendChild(selectEl);
 
-    const emptyOption = this.createOption("", "");
+    const emptyOption = this.createEmptyOption(placeholder);
     selectEl.appendChild(emptyOption);
 
     const requestHost = host || "https://app.formli.com";
@@ -78,6 +79,18 @@ export class OSCountry extends HTMLElement {
     const option = document.createElement("option");
     option.textContent = text;
     option.value = value;
+    return option;
+  }
+
+  createEmptyOption(placeholder) {
+    const option = document.createElement("option");
+    option.textContent = "";
+    option.value = "";
+    if (placeholder) {
+      option.textContent = placeholder;
+      option.disabled = true;
+      option.selected = true;
+    }
     return option;
   }
 }

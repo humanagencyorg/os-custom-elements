@@ -162,4 +162,16 @@ context("country field", function() {
       });
     });
   });
+
+  describe("when data-os-placeholder attribute is present", () => {
+    it("shows disabled selected option with text from an attribute value", function() {
+      cy.visit("/");
+
+      cy.get("os-country").eq(0).within(() => {
+        cy.get("select")
+          .find("option:selected:disabled")
+          .should("have.text", "Select country");
+      });
+    });
+  })
 });
