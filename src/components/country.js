@@ -29,7 +29,7 @@ export class OSCountry extends HTMLElement {
             const countries = data.data;
 
             if (firstOptions) {
-              const firstOptionsValues = firstOptions.split(",");
+              const firstOptionsValues = firstOptions.split(",").map((v) => v.trim());
               // Move countries to the top of the list
               countries.sort((a, b) => {
                 const aIndex = firstOptionsValues.indexOf(a.code);
