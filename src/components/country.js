@@ -8,10 +8,12 @@ export class OSCountry extends HTMLElement {
   connectedCallback() {
     const defaultValue = this.getAttribute("value");
     const dataFieldUuid = this.getAttribute("data-os-uuid");
+    const firstOptions = this.getAttribute("data-os-firstoptions");
+    const placeholder = this.getAttribute("data-os-placeholder");
     const selectEl = document.createElement("select");
     this.appendChild(selectEl);
 
-    const emptyOption = this.createOption("", "");
+    const emptyOption = this.createEmptyOption(placeholder);
     selectEl.appendChild(emptyOption);
 
     const requestHost = host || "https://app.formli.com";
@@ -24,9 +26,29 @@ export class OSCountry extends HTMLElement {
       })
         .then(async (response) => {
           if (response.ok) {
-            const countries = await response.json();
+            const data = await response.json();
+            const countries = data.data;
 
-            countries.data.forEach((country) => {
+            if (firstOptions) {
+              const firstOptionsValues = firstOptions.split(",").map((v) => v.trim());
+              // Move countries to the top of the list
+              countries.sort((a, b) => {
+                const aIndex = firstOptionsValues.indexOf(a.code);
+                const bIndex = firstOptionsValues.indexOf(b.code);
+                
+                if (aIndex !== -1 && bIndex !== -1) {
+                  return aIndex - bIndex;
+                } else if (aIndex !== -1) {
+                  return -1;
+                } else if (bIndex !== -1) {
+                  return 1;
+                } else {
+                  return 0;
+                }
+              });
+            }
+
+            countries.forEach((country) => {
               const option = this.createOption(country.name, country.code);
               selectEl.appendChild(option);
             });
@@ -57,6 +79,18 @@ export class OSCountry extends HTMLElement {
     const option = document.createElement("option");
     option.textContent = text;
     option.value = value;
+    return option;
+  }
+
+  createEmptyOption(placeholder) {
+    const option = document.createElement("option");
+    option.textContent = "";
+    option.value = "";
+    if (placeholder) {
+      option.textContent = placeholder;
+      option.disabled = true;
+      option.selected = true;
+    }
     return option;
   }
 }
