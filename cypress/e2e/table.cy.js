@@ -19,7 +19,7 @@ context("table element", function() {
       });
     });
 
-    describe("when table-success event has been triggered", () => {
+    describe("when initialized event has been triggered", () => {
       it("renders table with data", function() {
         const data = [
           [
@@ -53,8 +53,8 @@ context("table element", function() {
         ];
 
         cy.visit("/");
-        cy.get("os-table").trigger("table-success", {
-          detail: { data },
+        cy.get("os-table").trigger("initialized", {
+          detail: { value: data },
           force: true,
         }).then(() => {
           cy.get("os-table").find("table").should("exist");
