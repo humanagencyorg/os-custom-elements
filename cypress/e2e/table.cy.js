@@ -38,6 +38,45 @@ context("table element", function() {
       });
     });
 
+    describe("when element have data-os-results-per-page attribute", () => {
+      beforeEach(() => {
+        cy.visit("/").then(() => {
+          cy.request("/").then((response) => {
+            const body = `
+              <body>
+                <os-table data-os-results-per-page="100" data-os-element="loop" data-os-view="view_uuid"></os-table>
+              </body>
+            `;
+
+            const modifiedHtml = response.body.replace(
+              /<body>[\s\S]*<\/body>/,
+              body,
+            );
+
+            cy.intercept("/", modifiedHtml);
+          });
+        });
+      });
+
+      it("calls response views items endpoint with rows_per_page param", function() {
+        cy.intercept(
+          "GET",
+          "**/api/v1/response_views/view_uuid/items*",
+          {
+            data: [],
+          },
+        ).as("responseViewsItems");
+
+        cy.visit("/");
+
+        cy.wait("@responseViewsItems").then((interceptor) => {
+          expect(interceptor.request.url).to.match(
+            /response_views\/view_uuid\/items\?rows_per_page\=100/,
+          );
+        });
+      });
+    });
+
     describe("when response view have items", () => {
       it("renders table with data", function() {
         cy.intercept(
